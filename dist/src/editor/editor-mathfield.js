@@ -1976,8 +1976,6 @@ MathField.prototype._render = function(renderOptions) {
         selectionElement.style.height = Math.ceil(selectionRect.bottom - selectionRect.top - 1) + 'px';
         this.field.insertBefore(selectionElement, this.field.childNodes[0])
     }
-
-    if (this.config.onRender) this.config.onRender(this);
 }
 
 
