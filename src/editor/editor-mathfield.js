@@ -787,7 +787,7 @@ MathField.prototype._onPointerDown = function(evt) {
 
     // Prevent the browser from handling, in particular when this is a
     // touch event prevent the synthetic mouseDown event from being generated
-	// evt.preventDefault();
+    evt.preventDefault();
 }
 
 MathField.prototype._onSelectionDidChange = function() {
