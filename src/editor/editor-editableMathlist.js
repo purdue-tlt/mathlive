@@ -1961,13 +1961,13 @@ function removeParen(list) {
  * */
 EditableMathlist.prototype.simplifyParen = function(atoms) {
     if (atoms && this.config.removeExtraneousParentheses) {
-        for (let i = 0; atoms[i]; i++) {
+        for (let i = 0; i < atoms.length; i++) {
             if (atoms[i].type === 'leftright' && atoms[i].leftDelim === '(') {
                 if (Array.isArray(atoms[i].body)) {
                     let genFracCount = 0;
                     let genFracIndex = 0;
                     let nonGenFracCount = 0;
-                    for (let j = 0; atoms[i].body; j++) {
+                    for (let j = 0; j < atoms[i].body.length; j++) {
                         if (atoms[i].body[j].type === 'genfrac') {
                             genFracCount++;
                             genFracIndex = j;
