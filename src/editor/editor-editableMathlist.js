@@ -1962,20 +1962,22 @@ function removeParen(list) {
 EditableMathlist.prototype.simplifyParen = function(atoms) {
     if (atoms && this.config.removeExtraneousParentheses) {
         for (let i = 0; atoms[i]; i++) {
-            if (atoms[i].type === 'leftright' && atoms[i].leftDelim === '(' && Array.isArray(atoms[i].body)) {
-                let genFracCount = 0;
-                let genFracIndex = 0;
-                let nonGenFracCount = 0;
-                for (let j = 0; atoms[i].body[j]; j++) {
-                    if (atoms[i].body[j].type === 'genfrac') {
-                        genFracCount++;
-                        genFracIndex = j;
+            if (atoms[i].type === 'leftright' && atoms[i].leftDelim === '(') {
+                if (Array.isArray(atoms[i].body)) {
+                    let genFracCount = 0;
+                    let genFracIndex = 0;
+                    let nonGenFracCount = 0;
+                    for (let j = 0; atoms[i].body[j]; j++) {
+                        if (atoms[i].body[j].type === 'genfrac') {
+                            genFracCount++;
+                            genFracIndex = j;
+                        }
+                        if (atoms[i].body[j].type !== 'first') nonGenFracCount++;
                     }
-                    if (atoms[i].body[j].type !== 'first') nonGenFracCount++;
-                }
-                if (nonGenFracCount === 0 && genFracCount === 1) {
-                    // This is a single frac inside a leftright: remove the leftright
-                    atoms[i] = atoms[i].body[genFracIndex];
+                    if (nonGenFracCount === 0 && genFracCount === 1) {
+                        // This is a single frac inside a leftright: remove the leftright
+                        atoms[i] = atoms[i].body[genFracIndex];
+                    }
                 }
             }
         }
