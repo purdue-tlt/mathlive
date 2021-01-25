@@ -5,18 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "chrome",
-            "request": "attach",
-            "name": "Attach to Chrome",
-            "port": 9222,
-            "webRoot": "${workspaceFolder}"
-        },
-        {
-            "type": "chrome",
+            "name": "Debug Jest Tests",
+            "type": "node",
             "request": "launch",
-            "name": "Launch Chrome against localhost",
-            "url": "http://localhost:8890",
-            "webRoot": "${workspaceFolder}"
+            "runtimeArgs": [
+                "--inspect-brk",
+                "${workspaceRoot}/node_modules/.bin/jest",
+                "test/latex.test.ts",
+                "--runInBand"
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "port": 9229
         }
     ]
 }

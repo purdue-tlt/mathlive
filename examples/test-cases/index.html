@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8" />
+    <title>MathLive Testing Playground</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="/dist/mathlive-fonts.css" />
+
+    <!-- <link rel="stylesheet" href="/dist/mathlive-static.css" /> -->
+    <style>
+        code {
+            white-space: pre-wrap;
+        }
+
+        h2 {
+            font-size: 1em;
+            padding: 0;
+            margin: 0;
+            color: #666;
+        }
+
+
+        #mathfield-container {
+            padding: 8px;
+            min-width: 50px;
+            border: 1px solid #ddd;
+        }
+
+        #ta {
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .label {
+            font-weight: 700;
+        }
+
+        .popup-menu {
+            width: auto;
+            border-radius: 8px;
+            background: #e2e2e2;
+            box-shadow: 0 0 2px rgba(0, 0, 0, .5), 0 0 20px rgba(0, 0, 0, .2)
+        }
+
+        .popup-menu ul {
+            list-style: none;
+            padding: 6px 0 6px 0;
+            margin: 0;
+            cursor: initial;
+            user-select: none;
+        }
+
+        .popup-menu ul li {
+            display: flex;
+            flex-flow: column;
+            align-items: baseline;
+            padding: 1px 7px 1px 7px;
+            margin-top: 0;
+            margin-left: 6px;
+            margin-right: 6px;
+            border-radius: 4px;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .popup-menu ul li button {
+            appearance: none;
+            background: none;
+            outline: none;
+            width: 100%;
+            margin: 0;
+            padding: 1px 2px 1px 1px;
+            text-align: left;
+            color: inherit;
+            overflow: visible;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            border: 1px solid transparent;
+            white-space: nowrap;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-size: 13px;
+            line-height: 16px;
+            letter-spacing: 0.007em;
+        }
+
+        .popup-menu li[role=separator] {
+            border-bottom: 1px solid #c7c7c7;
+            border-radius: 0;
+            padding: 0;
+            margin-left: 15px;
+            margin-right: 15px;
+            padding-top: 5px;
+            margin-bottom: 5px;
+        }
+
+        .popup-menu ul li.disabled {
+            opacity: .5;
+        }
+
+        .popup-menu ul li[role=separator]:hover {
+            background: transparent;
+        }
+
+        .popup-menu ul li:hover {
+            background: #5898ff;
+        }
+
+        .popup-menu ul li.disabled:hover {
+            background: transparent;
+        }
+
+        .popup-menu ul li:hover>button {
+            color: white;
+        }
+
+        .popup-menu ul li.disabled:hover button {
+            color: inherit;
+        }
+
+        .popup-menu ul li ul {
+            display: none;
+        }
+
+        .popup-menu ul li:hover ul,
+        .submenu ul:hover {
+            display: block;
+            z-index: 10000;
+        }
+
+        .submenu>button {
+            padding-right: 0;
+        }
+
+        .submenu>button::after {
+            content: "〉";
+
+            font-weight: 900;
+            margin-left: 24px;
+        }
+
+        .submenu ul {
+            position: absolute;
+            width: auto;
+            border-radius: 8px;
+            border: 1px solid #c1c1c1;
+            background: #e2e2e2;
+            box-shadow: 0 0 20px rgba(0, 0, 0, .2);
+            left: calc(100% - 8px);
+            top: -4px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>MathLive Testing Playground</h1>
+    </header>
+    <main class='centered' tabindex="0">
+
+        <math-field id="mf" onkeystroke='console.log("keystroke handler")' onfocus='console.log("focusing")'
+            class="mathfield" style="max-width: 400px; width:100%" tabindex="0" smart-fence="true"
+            virtual-keyboard-mode="manual">f(x)=\frac{1}{\sin(x)}
+            <!--f(x)=\frac{x+1}{x-1}+x+1 -->
+            <!--x=\begin{bmatrix}x+1&b&c\\\alpha&\\beta\end{bmatrix}^T+x+1 -->
+            <!--  $$x+\left(\sqrt{x+1}+1\right)+\sum_0^4n^2+\frac{1+x}{x-1}\int^{\infty}_0x\mathrm{d}x+\boxed{\frac{1}{x}}\colorbox{yellow}{\sqrt{\frac{1}{x}}}\cancel{x^2+1}\xRightarrow[\text{above}]{\text{below}}$$
+            -->
+            <!-- x=x^2_{b+1}+\frac{1}{2_{56}}^{34}_{56}+\sqrt{23}+\sqrt[45]{67}+\box{x+1}+\xRightarrow[below]{above}^2+\begin{matrix}1&2&3\\4\\5&6\end{matrix} -->
+        </math-field>
+
+        <div class="centered"><input id='find-input' placeholder="Find Latex"></input></div>
+        <div class="centered" style="margin-top: .5em"><input id='replace-input' placeholder="Replace With..."></input>
+        </div>
+
+        <div id="search-results" class='centered'>
+            <h2 style='margin-top: 1em'>Search Results</h2>
+            <div class="output" id="search-results-output"></div>
+        </div>
+
+        <h2 style='margin-top: 1em'>Selection</h2>
+        <div class="output" id="selection"></div>
+
+        <!-- <math-field class="mathfield" style="width:100%" tabindex="4" virtual-keyboard-mode="manual">f_{4}(x) =
+        </math-field>
+
+        <math-field class="mathfield" style="width:100%" tabindex="-1" virtual-keyboard-mode="manual">f_{-1}(x) =
+        </math-field>
+
+
+        <div class="mathfield" id="oldschool-mf" tabindex=' 0'>f_0(x) = </div>
+
+        <section id='mathfield-container'></section> -->
+
+        <!-- (x,,2) -->
+        <!-- -123, 456.789, -->
+        <!-- x_5 -->
+        <!-- -5-3-2 -->
+        <!-- 12+ -->
+        <!-- \lbrack\rbrack -->
+        <!-- \foo  -->
+        <!-- (a,,b) -->
+        <!--       a\le b \overline{z} \overrightarrow{ABC} -->
+        <!-- $$(deadbeef)_{16}$$ -->
+        <!-- \partial^2_{x,y} f(x,y) -->
+        <!-- |(a+|b|+1)| -->
+        <!-- -0+0(\frac{0}{\frac{0}{0}}-0)+x^\pi -->
+        <!-- -0+0(\frac{0}{\frac{0}{0}}-0) -->
+        <!-- x_0 + x_{0} +  x_n + x_{n+1}-->
+        <!-- -2x5z\sqrt{y}\frac{3}{4}3\pi y} -->
+        <!-- \sin^{-1}\prime(x)      \sin^{-1}'(x) -->
+        <!-- "\begin{align*}\dot{x} & =\sigma(y-x) \\ \dot{y} & =\rho x-y-xz \\ \dot{z} & =-\beta z+xy\end{align*}" -->
+        <!-- i, 2i, -i -->
+        <!-- 2{xy} should create group -->
+
+
+        <!-- \huge x \text{y} -->
+        <!-- \scriptscriptstyle x \text{y} -->
+        <!-- \sqrt[\Huge 3]{29} -->
+        <!-- x^{\binom{n}{k}} -->
+        <!-- \binom12 \textstyle \binom34 \scriptstyle \binom56 \displaystyle \binom78 \scriptstyle \binom90 -->
+        <!-- \int^b_a x^2 dx -->
+        <!-- \int^b_a\int^c_d x^2 dx dy -->
+        <!-- \int x^2 + x = 0 -->
+        <!-- \int x^2 + x dx = 0 -->
+        <!-- \int (x^2 + x) dx = 0 -->
+
+        <h2>Latex</h2>
+        <div class="output" id="latex"></div>
+        <h2>MathASCII</h2>
+        <div class="output" id="mathascii"></div>
+    </main>
+
+    <script type="module">
+        import { convertLatexToMarkup } from '/dist/mathlive.mjs';
+
+        let gSearchLatex;
+
+        function applySearchTerm() {
+            if (!gSearchLatex) {
+                document.getElementById('search-results').classList.add('hidden');
+                return;
+            }
+            document.getElementById('search-results').classList.remove('hidden');
+            const mf = document.getElementById('mf');
+
+            mf.applyStyle({ color: "none", backgroundColor: "none" }, {
+                range: [0, -1], suppressChangeNotifications: true
+            });
+
+            const searchResults = mf.find(gSearchLatex.startsWith('/') ?
+                new RegExp(gSearchLatex.slice(1, -1)) :
+                gSearchLatex);
+
+            document.getElementById('search-results-output').innerHTML =
+                searchResults.
+                    map(range => `${range[0]}, ${range[1]} = "${mf.getValue(range)}"`).
+                    join('<br>');
+            searchResults.forEach((x) =>
+                mf.applyStyle({ color: "red", backgroundColor: "yellow" }, x, {
+                    suppressChangeNotifications: true
+                }
+                )
+            );
+        }
+        function applyReplace() {
+            document.getElementById('search-results').classList.add('hidden');
+            if (!gSearchLatex) {
+                return;
+            }
+
+            const mf = document.getElementById('mf');
+
+            mf.applyStyle({ color: "none", backgroundColor: "none" }, {
+                range: [0, -1], suppressChangeNotifications: true
+            });
+            const replacement = replaceInput.value;
+            const searchResults = mf.replace(gSearchLatex.startsWith('/') ?
+                new RegExp(gSearchLatex.slice(1, -1)) :
+                gSearchLatex, replacement /* (args) => {
+                    console.log(args);
+                    return replacement;
+                }*/);
+        }
+
+        const ta = document.getElementById('find-input');
+        ta.addEventListener('change', (ev) => {
+            gSearchLatex = ta.value;
+            applySearchTerm();
+        });
+
+        const replaceInput = document.getElementById('replace-input');
+        replaceInput.addEventListener('change', (ev) => {
+            applyReplace();
+        });
+
+        const mf = document.getElementById('mf');
+        mf.setOptions({
+            onBlur: () => { console.log('blurring') },
+            onKeystroke: () => { console.log('options keystroke'); return true; },
+            inlineShortcuts: {
+                // ㄱ: '\\sqrt',
+                sq: '\\sqrt{#0}',
+                // ㄱㄴ: '\\sqrt{#0}',
+                "ㄱㄴ": '\\sqrt{#0}',
+            },
+            macros: {
+                'rcases': `\\left.
+\\begin{array}{ll}
+#0
+\\end{array}
+\\right\\}`
+            },
+            onError: (ev) => { console.log('Error :' + ev.code); }
+        });
+
+        mf.selection = [2, 5];
+        mf.addEventListener('blur', (ev) => {
+            console.log('blur event');
+        });
+        mf.addEventListener('keystroke', (ev) => {
+            console.log('keystroke event', ev.detail.keystroke);
+        });
+        mf.addEventListener('focus', (ev) => {
+            console.log('focus event');
+        });
+        mf.addEventListener('input', (ev) => {
+            updateContent(mf);
+            applySearchTerm();
+        });
+        mf.addEventListener('change', (ev) => {
+        });
+        mf.addEventListener('selection-change', (ev) => {
+            const selection = mf.selection;
+            // console.assert(selection.ranges[0][0] !== 2 || selection.ranges[0][1] !== 3);
+            document.getElementById('selection').innerHTML =
+                // label("anchor    ") + mf.anchor + "<br>" +
+                label("position  ") + mf.position + "<br>" +
+                label("start     ") + selection.ranges[0][0] + "<br>" +
+                label("end       ") + selection.ranges[0][1] + "<br>" +
+                label("direction ") + '\"' + selection.direction + "\"<br>" +
+                label("value     ") + '\"' + mf.getValue(selection) + '"'
+        });
+        mf.addEventListener('math-error', (ev) => {
+            console.log('Error :' + ev.detail.code);
+        });
+        updateContent(mf);
+        applySearchTerm();
+
+        let mathfieldContainer = document.getElementById('mathfield-container');
+        if (mathfieldContainer) {
+            let mfe = new MathfieldElement();
+            // Deferred assignments
+            mfe.value = "\\frac{\\sin(x)}{\\cos(x)}";
+            mfe.setAttribute('virtual-keyboard-layout', 'dvorak');
+            mfe.setOptions({
+                virtualKeyboardMode: 'manual',
+            });
+            // mfe.setAttribute('disabled', '');   // sets to true
+
+            // Attach the element (and use the attached values);
+            mathfieldContainer.appendChild(mfe);
+
+            mathfieldContainer.removeChild(mfe);
+
+            mathfieldContainer.appendChild(mfe);
+        }
+        if (document.getElementById('oldschool-mf')) {
+            MathLive.makeMathField('oldschool-mf', {
+                smartFence: true,
+                smartMode: true,
+                virtualKeyboardMode: 'manual',
+                // onContentDidChange: (mf) => {
+                //     updateContent(mf)
+                // },
+                onError: (err) => {
+                    console.error(
+                        err.latex,
+                        err.code + ' ' + (err.arg ?? '')
+                    );
+                },
+            });
+        }
+        function updateContent(mf) {
+            const latex = mf.getValue('latex-expanded');
+            try {
+
+                document.getElementById('latex').innerHTML = escapeHtml(
+                    latex
+                );
+
+                document.getElementById(
+                    'mathascii'
+                ).innerHTML = escapeHtml(mf.getValue('ASCIIMath'));
+            } catch (e) {
+                console.error("Error converting %c " + latex + '%c ' +
+                    e.toString(), 'color: red;  background: hsla(0, 60%, 90%)', 'background: transparent');
+            }
+        }
+
+
+        function label(s) {
+            return `<span class='label'>${s}</span>`;
+        }
+
+        function escapeHtml(string) {
+            return String(string).replace(/[&<>"'`= /\u200b]/g, function (
+                s
+            ) {
+                return (
+                    {
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        '"': '&quot;',
+                        "'": '&#39;',
+                        '/': '&#x2F;',
+                        '`': '&#x60;',
+                        '=': '&#x3D;',
+                        '\u200b': '&amp;#zws;',
+                    }[s] || s
+                );
+            });
+        }
+    </script>
+</body>
+
+</html>

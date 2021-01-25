@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8" />
+    <title>MathLive Basic Example</title>
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+        body {
+            font-family: sans-serif;
+            color: #444;
+            background-color: #f9f9f9;
+        }
+
+        main {
+            max-width: 820px;
+            margin: auto;
+        }
+
+        iframe {
+            display: block;
+            width: 100%;
+            min-height: 230px;
+            margin: 20px 0;
+            border: 2px dashed #999;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>MathLive Customization Example</h1>
+    </header>
+
+    <main>
+        <h2>MathLive Iframe Example</h2>
+        <iframe src="child.html"></iframe>
+        <iframe src="child2.html"></iframe>
+    </main>
+
+    <footer>
+        <a href="https://github.com/arnog/mathlive/tree/master/examples/basic"><svg class="fa-w-24" height="24px"
+                style="vertical-align: -3px; margin-right: 6px;">
+                <use xlink:href="../icons.svg#github" /></svg>View source&nbsp;<svg class="fa-w-24" height="24px">
+                <use xlink:href="../icons.svg#angle-right" /></svg></a>
+        <a href="../">More examples&nbsp;<svg class="fa-w-24" height="24px">
+                <use xlink:href="../icons.svg#angle-right" /></svg></a>
+        <a href="/">Return to the homepage&nbsp;<svg class="fa-w-24" height="24px">
+                <use xlink:href="../icons.svg#angle-right" /></svg></a>
+    </footer>
+
+    <script type="module">
+        import { makeSharedVirtualKeyboard } from '/dist/mathlive.mjs';
+        // import {makeSharedVirtualKeyboard} from 'https://unpkg.com/mathlive/dist/mathlive.min.mjs';
+
+        makeSharedVirtualKeyboard({});
+    </script>
+</body>
+
+</html>
