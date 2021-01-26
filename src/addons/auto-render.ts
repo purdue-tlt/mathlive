@@ -7,6 +7,7 @@ import { loadFonts } from '../core/fonts';
 import { inject as injectStylesheet } from '../common/stylesheet';
 // @ts-ignore-error
 import coreStylesheet from '../../css/core.less';
+import { Atom } from '../core/atom';
 
 export type AutoRenderOptionsPrivate = AutoRenderOptions & {
   /** A function that will convert any LaTeX found to
@@ -20,6 +21,7 @@ export type AutoRenderOptionsPrivate = AutoRenderOptions & {
       macros?: MacroDictionary;
       onError?: ErrorListener<ParserErrorCode>;
       format?: string;
+      onCreateMathlist?: (mathlist: Atom[]) => void;
     }
   ) => string;
 
@@ -254,6 +256,7 @@ function createMarkupNode(
       mathstyle: mathstyle ?? 'displaystyle',
       format: 'html',
       macros: options.macros,
+      onCreateMathlist: options.onCreateMathlist,
     });
     span.innerHTML = options.createHTML ? options.createHTML(html) : html;
   } catch (error: unknown) {

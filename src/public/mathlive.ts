@@ -26,10 +26,14 @@ import {
   TextToSpeechOptions,
 } from './options';
 import { MacroDictionary, ErrorListener, ParserErrorCode } from './core';
+import { Atom } from '../core/atom-class';
+import { makeRoot } from '../core/atom-utils';
 
 export { Mathfield };
 export { MathfieldOptions as MathfieldConfig };
 export { MathfieldElement };
+export { Atom };
+export { makeRoot };
 
 /**
  * Current version: `{{SDK_VERSION}}`
@@ -101,6 +105,14 @@ export declare function makeMathField(
 export declare function makeSharedVirtualKeyboard(
   options: RemoteVirtualKeyboardOptions
 ): void;
+
+export declare function convertLatexToMathlist(
+  latex: string,
+  options?: {
+    macros?: MacroDictionary;
+    onError?: ErrorListener<ParserErrorCode>;
+  }
+): Atom[];
 
 /**
  * Convert a LaTeX string to a string of HTML markup.
@@ -435,6 +447,8 @@ export type AutoRenderOptions = {
       inline: [openDelim: string, closeDelim: string][];
     };
   };
+
+  onCreateMathlist?: (mathlist: Atom[]) => void;
 };
 
 /**

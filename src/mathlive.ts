@@ -12,6 +12,7 @@ import type {
 } from './public/core';
 
 import { Atom } from './core/atom-class';
+import { makeRoot } from './core/atom-utils';
 import { parseLatex } from './core/parser';
 import { coalesce, makeStruts, Span } from './core/span';
 import { MACROS, MacroDictionary } from './core-definitions/definitions';
@@ -46,6 +47,8 @@ import { RemoteVirtualKeyboard } from './editor-mathfield/remote-virtual-keyboar
 
 export { MathfieldElement } from './public/mathfield-element';
 
+export { makeRoot };
+
 export function makeMathField(
   element: HTMLElement,
   options: Partial<MathfieldOptions> = {}
@@ -59,6 +62,29 @@ export function makeSharedVirtualKeyboard(
   options: Partial<RemoteVirtualKeyboardOptions>
 ): void {
   new RemoteVirtualKeyboard(options);
+}
+
+export function convertLatexToMathlist(
+  latex: string,
+  options?: {
+    macros?: MacroDictionary;
+    onError?: ErrorListener<ParserErrorCode>;
+  }
+): Atom[] {
+  options = options ?? {};
+  options.macros = options.macros ?? {};
+  options.macros = { ...MACROS, ...(options.macros ?? {}) };
+
+  const mathlist = parseLatex(
+    latex,
+    'math',
+    null,
+    options.macros,
+    false,
+    options.onError
+  );
+
+  return mathlist;
 }
 
 /** @deprecated */
@@ -83,6 +109,7 @@ export function convertLatexToMarkup(
     macros?: MacroDictionary;
     onError?: ErrorListener<ParserErrorCode>;
     format?: string;
+    onCreateMathlist?: (mathlist: Atom[]) => void;
   }
 ): string {
   options = options ?? {};
@@ -102,6 +129,10 @@ export function convertLatexToMarkup(
     false,
     options.onError
   );
+
+  if (options.onCreateMathlist) {
+    options.onCreateMathlist(atoms);
+  }
 
   //
   // 2. Transform the math atoms into elementary spans
