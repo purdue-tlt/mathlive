@@ -34396,4 +34396,4 @@ var mathlive = {
 };
 
 export default mathlive;
-export { MathfieldElement, astToLatex, convertLatexToMarkup, convertLatexToMathMl, convertLatexToMathlist, convertLatexToSpeakableText, debug, makeMathField, makeRoot, makeSharedVirtualKeyboard, renderMathInDocument, renderMathInElement$1 as renderMathInElement };
+export { Atom, MathfieldElement, astToLatex, convertLatexToMarkup, convertLatexToMathMl, convertLatexToMathlist, convertLatexToSpeakableText, debug, makeMathField, makeRoot, makeSharedVirtualKeyboard, renderMathInDocument, renderMathInElement$1 as renderMathInElement };

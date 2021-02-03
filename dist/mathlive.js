@@ -34401,6 +34401,7 @@ use
       },
   };
 
+  exports.Atom = Atom;
   exports.MathfieldElement = MathfieldElement;
   exports.astToLatex = astToLatex;
   exports.convertLatexToMarkup = convertLatexToMarkup;
