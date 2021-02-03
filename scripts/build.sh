@@ -66,6 +66,12 @@ fi
 printf "\033[32m ● \033[0m Building declaration files (.d.ts)"
 npx tsc --target "es2020" -d --moduleResolution "node" --emitDeclarationOnly --outDir ./declarations ./src/public/mathlive.ts 
 mv ./declarations/public ./dist
+mkdir -p ./dist/core
+mv ./declarations/core/atom-class.d.ts ./dist/core/atom-class.d.ts
+mv ./declarations/core/atom-utils.d.ts ./dist/core/atom-utils.d.ts
+mv ./declarations/core/context.d.ts ./dist/core/context.d.ts
+mv ./declarations/core/span.d.ts ./dist/core/span.d.ts
+mv ./declarations/core/mathstyle.d.ts ./dist/core/mathstyle.d.ts
 # mv ./declarations/math-json/ ./dist
 rm -rf ./declarations
 echo -e "\033[2K\033[80D\033[32m ✔ \033[0m Declaration files built"

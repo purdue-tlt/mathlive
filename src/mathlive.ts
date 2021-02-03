@@ -47,6 +47,7 @@ import { RemoteVirtualKeyboard } from './editor-mathfield/remote-virtual-keyboar
 
 export { MathfieldElement } from './public/mathfield-element';
 
+export { Atom };
 export { makeRoot };
 
 export function makeMathField(
