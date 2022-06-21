@@ -616,18 +616,14 @@ MathAtom.MathAtom.prototype.toLatex = function(options) {
             } else if (sup === '\u2033') {      // DOUBLE-PRIME
                 sup = '\\doubleprime ';
             }
-            result += '^' + sup;
+            result += '^{' + sup + '}';
         } else {
             result += '^{' + sup + '}';
         }
     }
     if (this.subscript) {
         const sub = latexify(this, this.subscript, options);
-        if (sub.length === 1) {
-            result += '_' + sub;
-        } else {
-            result += '_{' + sub + '}';
-        }
+        result += '_{' + sub + '}';
     }
     return result;
 }
