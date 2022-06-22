@@ -610,24 +610,16 @@ MathAtom.MathAtom.prototype.toLatex = function(options) {
     }
     if (this.superscript) {
         let sup = latexify(this, this.superscript, options);
-        if (sup.length === 1) {
-            if (sup === '\u2032') {     // PRIME
-                sup = '\\prime ';
-            } else if (sup === '\u2033') {      // DOUBLE-PRIME
-                sup = '\\doubleprime ';
-            }
-            result += '^' + sup;
-        } else {
-            result += '^{' + sup + '}';
+        if (sup === '\u2032') {     // PRIME
+            sup = '\\prime ';
+        } else if (sup === '\u2033') {      // DOUBLE-PRIME
+            sup = '\\doubleprime ';
         }
+        result += '^{' + sup + '}';
     }
     if (this.subscript) {
         const sub = latexify(this, this.subscript, options);
-        if (sub.length === 1) {
-            result += '_' + sub;
-        } else {
-            result += '_{' + sub + '}';
-        }
+        result += '_{' + sub + '}';
     }
     return result;
 }
