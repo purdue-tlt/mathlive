@@ -39,6 +39,7 @@ const CANONICAL_NAMES = {
     '!':                'factorial',
     '\\mp':             'minusplus', // MINUS-PLUS SIGN
     '\\ne':             '!=',
+    '\\neq':            '!=',
     '\\coloneq':        ':=',
     '\\questeq':        '?=',
     '\\approx':         'approx',

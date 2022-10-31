@@ -53,6 +53,8 @@ const PRONUNCIATION = {
     '\\ge':         'is greater than or equal to ',
     '\\geq':        'is greater than or equal to ',
     '\\leq':        'is less than or equal to ',
+    '\\ne':         'is not equal to ',
+    '\\neq':        'is not equal to ',
     '!':            'factorial ',
     '\\sin':        'sine ',
     '\\cos':        'cosine ',
