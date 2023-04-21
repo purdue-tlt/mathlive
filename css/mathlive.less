@@ -520,19 +520,10 @@
             left: 0.326em;
         }
 
-        // The unicode character \u005e (circumflex accent) is pretty tall. This replaces it with \u02c6 (modifier
-        // letter circumflex accent) which is the character Wikipedia uses for the hat character.
         .accent-body.accent-hat > span {
-            visibility: hidden;
             position: relative;
-        }
-
-        .accent-body.accent-hat > span::after {
-            visibility: visible;
-            position: absolute;
-            top: 0.5em;
-            left: 0;
-            content: "ˆ";
+            top: 0.06em;
+            left: 0.05em;
             font-size: 1.5em;
             font-weight: 100;
         }

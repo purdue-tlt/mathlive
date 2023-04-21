@@ -831,12 +831,10 @@ class MathAtom {
         // The \vec character that the fonts use is a combining character, and
         // thus shows up much too far to the left. To account for this, we add a
         // specific class which shifts the accent over to where we want it.
-        // The \hat character uses \u005e which is a bit tall and also crowds the
-        // letter being accented. We set a class for that accent so we can replace
-        // it with \u02c6 which isn't quite as tall and appears to be designed to be
-        // used as a modifier for another glyph.
+        // The \hat character uses \u02c6 which needs use a bit of positioning help
+        // as well
         const vecClass = this.accent === '\u20d7' ? ' accent-vec' :
-            this.accent === '\u005e' ? ' accent-hat' : '';
+            this.accent === '\u02c6' ? ' accent-hat' : '';
         let accentBody = makeSpan(makeSpan(accent), 'accent-body' + vecClass);
         accentBody = makeVlist(context, [base, -clearance, accentBody]);
         // Shift the accent over by the skew. Note we shift by twice the skew
