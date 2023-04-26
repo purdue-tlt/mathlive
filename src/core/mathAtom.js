@@ -99,27 +99,27 @@ const SIZING_MULTIPLIER = {
  * @property {MathAtom[]} subscript
  * @property {MathAtom[]} numer
  * @property {MathAtom[]} denom
- * 
+ *
  * @property {boolean} captureSelection if true, this atom does not let its
  * children be selected. Used by the `\enclose` annotations, for example.
- * 
+ *
  * @property {boolean} skipBoundary if true, when the caret reaches the
  * first position in this element's body, it automatically moves to the
  * outside of the element. Conversely, when the caret reaches the position
  * right after this element, it automatically moves to the last position
  * inside this element.
- * 
+ *
  * @class module:core/mathatom#MathAtom
  * @global
  * @private
  */
 class MathAtom {
     /**
-     * 
-     * @param {string} mode 
-     * @param {string} type 
-     * @param {string|Array} body 
-     * @param {object} style 
+     *
+     * @param {string} mode
+     * @param {string} type
+     * @param {string|Array} body
+     * @param {object} style
      */
     constructor(mode, type, body, style) {
         this.mode = mode;
@@ -145,7 +145,7 @@ class MathAtom {
     }
 
     applyStyle(style) {
-        // Always apply the style, even if null. This will also set the 
+        // Always apply the style, even if null. This will also set the
         // autoFontFamily, which account for auto-italic. This code path
         // is used by \char.
         Object.assign(this, style);
@@ -308,7 +308,7 @@ class MathAtom {
         const span = makeOrd(decompose(localContext, this.body));
         if (this.cssId) span.cssId = this.cssId;
         span.applyStyle({
-            backgroundColor: this.backgroundColor, 
+            backgroundColor: this.backgroundColor,
             cssClass: this.cssClass
         });
         return span;
@@ -623,16 +623,16 @@ class MathAtom {
             mathstyle.metrics.delim1 :
             mathstyle.metrics.delim2;
         // Optional delimiters
-        const leftDelim = Delimiters.makeCustomSizedDelim('mopen', 
-            this.leftDelim, 
-            delimSize, 
-            true, 
+        const leftDelim = Delimiters.makeCustomSizedDelim('mopen',
+            this.leftDelim,
+            delimSize,
+            true,
             context.clone({mathstyle: mathstyle})
         );
-        const rightDelim = Delimiters.makeCustomSizedDelim('mclose', 
-            this.rightDelim, 
-            delimSize, 
-            true, 
+        const rightDelim = Delimiters.makeCustomSizedDelim('mclose',
+            this.rightDelim,
+            delimSize,
+            true,
             context.clone({mathstyle: mathstyle})
         );
         leftDelim.applyStyle(this.getStyle());
@@ -683,9 +683,9 @@ class MathAtom {
         // Add the left delimiter to the beginning of the expression
         if (this.leftDelim) {
             result.push(Delimiters.makeLeftRightDelim(
-                'mopen', 
-                this.leftDelim, 
-                innerHeight, innerDepth, 
+                'mopen',
+                this.leftDelim,
+                innerHeight, innerDepth,
                 localContext
             ));
             result[result.length - 1].applyStyle(this.getStyle());
@@ -721,9 +721,9 @@ class MathAtom {
                 delim = delim || this.leftDelim;
                 classes = 'ML__smart-fence__close';
             }
-            result.push(Delimiters.makeLeftRightDelim('mclose', 
-                delim, 
-                innerHeight, innerDepth, 
+            result.push(Delimiters.makeLeftRightDelim('mclose',
+                delim,
+                innerHeight, innerDepth,
                 localContext,
                 classes
             ));
@@ -831,7 +831,10 @@ class MathAtom {
         // The \vec character that the fonts use is a combining character, and
         // thus shows up much too far to the left. To account for this, we add a
         // specific class which shifts the accent over to where we want it.
-        const vecClass = this.accent === '\u20d7' ? ' accent-vec' : '';
+        // The \hat character uses \u02c6 which needs use a bit of positioning help
+        // as well
+        const vecClass = this.accent === '\u20d7' ? ' accent-vec' :
+            this.accent === '\u02c6' ? ' accent-hat' : '';
         let accentBody = makeSpan(makeSpan(accent), 'accent-body' + vecClass);
         accentBody = makeVlist(context, [base, -clearance, accentBody]);
         // Shift the accent over by the skew. Note we shift by twice the skew
@@ -1153,7 +1156,7 @@ class MathAtom {
         const span = makeOrd(decompose(localContext, this.body));
         if (this.cssId) span.cssId = this.cssId;
         span.applyStyle({
-            backgroundColor: this.backgroundColor, 
+            backgroundColor: this.backgroundColor,
             cssClass: this.cssClass
         });
         span.classes += ' ML__variable';
@@ -1442,15 +1445,15 @@ class MathAtom {
         // The font family is determined by:
         // - the base font family associated with this atom (optional). For example,
         // some atoms such as some functions ('\sin', '\cos', etc...) or some
-        // symbols ('\Z') have an explicit font family. This overrides any 
+        // symbols ('\Z') have an explicit font family. This overrides any
         // other font family
-        // - the user-specified font family that has been explicitly applied to 
+        // - the user-specified font family that has been explicitly applied to
         // this atom
         // - the font family automatically determined in math mode, for example
         // which italicizes some characters, but which can be overridden
 
         const style  = this.getStyle();
-        result.applyStyle(style); 
+        result.applyStyle(style);
 
         // Apply size correction
         const size = style && style.fontSize ? style.fontSize : 'size5';
@@ -1556,9 +1559,9 @@ function makeID(context) {
  * @param {Context} context
  * @param {Span} nucleus The base over and under which the atoms will
  * be placed.
- * @param {number} nucleusShift The vertical shift of the nucleus from 
+ * @param {number} nucleusShift The vertical shift of the nucleus from
  * the baseline.
- * @param {number} slant For operators that have a slant, such as \int, 
+ * @param {number} slant For operators that have a slant, such as \int,
  * indicate by how much to horizontally offset the above and below atoms
  * @param {Span} above
  * @param {Span} below
@@ -1655,7 +1658,7 @@ function makeStack(context, nucleus, nucleusShift, slant, above, below, type) {
  */
 function decompose(context, atoms) {
     if (!(context instanceof Context.Context)) {
-        // We can be passed either a Context object, or 
+        // We can be passed either a Context object, or
         // a simple object with some properties set.
         context = new Context.Context(context);
     }
@@ -1686,7 +1689,7 @@ function decompose(context, atoms) {
             for (let i = 0; i < atoms.length; i++) {
                 // Is this a binary operator ('+', '-', etc...) that potentially
                 // needs to be adjusted to a unary operator?
-                // 
+                //
                 // When preceded by a mbin, mopen, mrel, mpunct, mop or
                 // when followed by a mrel, mclose or mpunct
                 // or if preceded or followed by no sibling, a 'mbin' becomes a
@@ -1706,7 +1709,7 @@ function decompose(context, atoms) {
                     phantomBase = null;
                 }
 
-                if (context.generateID.groupNumbers && 
+                if (context.generateID.groupNumbers &&
                     digitStringID &&
                     atoms[i].type === 'mord' &&
                     /[0-9,.]/.test(atoms[i].latex)) {
