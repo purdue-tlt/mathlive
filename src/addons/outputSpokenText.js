@@ -29,7 +29,8 @@ const PRONUNCIATION = {
     '\\mu':         'mew ',
     '\\sigma':      'sigma ',
     '\\pi':         'pie ',
-    '\\imaginaryI': 'eye ',
+    '\\imaginaryI': 'imaginary eye ',
+    '\\imaginaryJ': 'imaginary jay ',
 
     '\\sum':        'Summation ',
     '\\prod':       'Product ',
