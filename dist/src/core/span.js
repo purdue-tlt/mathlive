@@ -1076,7 +1076,7 @@ const FONT_NAME = {
     'cmtt':         'Typewriter-Regular',
     'math':         'Math-Regular',
     'mainit':       'Main-Italic',
-
+    'mathbf':       'Main-Bold'
 };
 
 const FONT_CLASS = {
@@ -1090,6 +1090,7 @@ const FONT_CLASS = {
     'cmtt':         'ML__tt',
     'math':         'ML__mathit',
     'mainit':       'ML__mainit',
+    'mathbf':       'ML__mathbf'
 }
 
 

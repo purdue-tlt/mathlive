@@ -1124,6 +1124,7 @@ class Parser {
                         // Create the MathAtom.
                         // If a parse function is present, invoke it with the arguments,
                         // and pass the result to be appended by the constructor.
+                        let style = undefined;
                         if (info.parse) {
                             const attributes = info.parse('\\' + token.value, args);
                             if (!attributes.type) {
@@ -1152,16 +1153,15 @@ class Parser {
                             } else {
                                 result = new MathAtom(this.parseMode, 
                                     info.type, 
-                                    explicitGroup ? this.scanArg(explicitGroup) : null, 
-                                    {...this.style, ...attributes});
+                                    explicitGroup ? this.scanArg(explicitGroup) : null);
+                                style = {...this.style, ...attributes};
                             }
                         } else {
-                            const style = {...this.style};
+                            style = {...this.style};
                             if (info.baseFontFamily) style.baseFontFamily = info.baseFontFamily;
                             result = new MathAtom(this.parseMode, 
                                 info.type || 'mop', 
-                                info.value || token.value, 
-                                style);
+                                info.value || token.value);
 
                             if (info.skipBoundary) {
                                 result.skipBoundary = true;
@@ -1180,6 +1180,10 @@ class Parser {
                                     result = [result, smartFence];
                                 }
                             }
+                        }
+                        // apply style after latex is stored on result
+                        if (result && style) {
+                            result.applyStyle(style);
                         }
                     }
 
