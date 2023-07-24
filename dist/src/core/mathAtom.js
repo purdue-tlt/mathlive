@@ -128,7 +128,9 @@ class MathAtom {
 
         // Append all the properties in extras to this
         // This can override the mode, type and body
-        this.applyStyle(style);
+        if (style) {
+            this.applyStyle(style);
+        }
     }
 
     getStyle() {
@@ -176,7 +178,9 @@ class MathAtom {
         if (this.mode === 'math') {
             const symbol = typeof this.body === 'string' ? this.body : '';
             this.autoFontFamily = 'cmr';
-            if (AUTO_ITALIC_REGEX.test(symbol)) {
+            if (/\\imaginary[IJ]/.test(this.latex)) {
+                this.autoFontFamily = 'mathbf';
+            } else if (AUTO_ITALIC_REGEX.test(symbol)) {
                 // Auto italicize alphabetic and lowercase greek symbols
                 // in math mode (European style: American style would not
                 // italicize greek letters, but it's TeX's default behavior)
