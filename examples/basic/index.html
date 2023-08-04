@@ -37,7 +37,7 @@
 <body>
     <main>
         <h2>MathLive Basic Example</h2>
-        <div class="mathfield" id='mf' >f(x)=</div>
+        <div class="mathfield" id='mf' >100\kg</div>
         <div id='output'></div>
     </main>
 
@@ -46,7 +46,7 @@
 <script> 
     const mf = MathLive.makeMathField('mf', {
         onContentDidChange: mf => {
-            document.getElementById('output').innerHTML = mf.$latex();
+            document.getElementById('output').innerHTML = mf.$latex(undefined, { outputStyles: false });
         }
     });
 </script>

@@ -352,6 +352,9 @@ const NOTES = {
     '\\lim':            'limit',
 
     '\\variable':       'variable',
+
+    '\\g': 'gram',
+    '\\kg': 'kilogram'
 };
 
 function getNote(symbol) {

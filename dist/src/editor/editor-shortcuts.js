@@ -554,23 +554,31 @@ const INLINE_SHORTCUTS = {
                                 value:'\\operatorname{Im}'},
 
     // UNITS
-    'mm':                   {   mode: 'math',
-                                after: 'nothing+digit', 
-                                value:  '\\operatorname{mm}',         // millimeter
-                            },
-    'cm':                   {   mode: 'math',
-                                after: 'nothing+digit', 
-                                value:  '\\operatorname{cm}',         // centimeter
-                            },
-    'km':                   {   mode: 'math',
-                                after: 'nothing+digit', 
-                                value:  '\\operatorname{km}',         // kilometer
-                            },
-    'kg':                   {   mode: 'math',
-                                after: 'nothing+digit', 
-                                value:  '\\operatorname{kg}',         // kilogram
-                            },
+    // 'mm':                   {   mode: 'math',
+    //                             after: 'nothing+digit', 
+    //                             value:  '\\operatorname{mm}',         // millimeter
+    //                         },
+    // 'cm':                   {   mode: 'math',
+    //                             after: 'nothing+digit', 
+    //                             value:  '\\operatorname{cm}',         // centimeter
+    //                         },
+    // 'km':                   {   mode: 'math',
+    //                             after: 'nothing+digit', 
+    //                             value:  '\\operatorname{km}',         // kilometer
+    //                         },
+    // 'kg':                   {   mode: 'math',
+    //                             after: 'nothing+digit', 
+    //                             value:  '\\operatorname{kg}',         // kilogram
+    //                         },
                             
+    'g':                    {
+        after: 'nothing+digit',
+        value:'\\g'
+    },
+    'kg':                   {
+        after: 'nothing+digit',
+        value:'\\kg'
+    },
 
 
     // '||':                   '\\lor',
