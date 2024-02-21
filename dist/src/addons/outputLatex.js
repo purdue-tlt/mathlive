@@ -125,9 +125,6 @@ function latexifyArray(parent, properties, atoms, options, targetProperty = 0) {
             } else if (prop === 'fontSeries' && propValue === 'b' || prop === 'fontShape' && propValue === 'n' && atom['fontSeries'] === 'b') {
                 prefix = '\\mathbf{';
                 suffix = '}';
-            } else if (prop === 'fontSeries' && propValue !== 'n') {
-                prefix = '{\\fontseries{' + propValue + '}';
-                suffix = '}';
             } else if (prop === 'fontShape') {
                 if (propValue === 'n') {
                     prefix = '{\\upshape ';
@@ -136,7 +133,10 @@ function latexifyArray(parent, properties, atoms, options, targetProperty = 0) {
                     prefix = '{\\fontshape{' + propValue + '}';
                     suffix = '}';
                 }
-            } else if (prop === 'fontFamily') {
+            } else if (prop === 'fontSeries' && propValue !== 'n') {
+                prefix = '{\\fontseries{' + propValue + '}';
+                suffix = '}';
+            }else if (prop === 'fontFamily') {
                 if (!/^(math|main)$/.test(propValue)) {
                     const command = {
                         'cal': 'mathcal', 
@@ -588,7 +588,7 @@ MathAtom.MathAtom.prototype.toLatex = function(options) {
             break;
 
         case 'variable':
-            result += `\\variable{${latexify(this, this.body, options)}}`;
+            result += `\\variable{${latexify(this, this.body, { ...options, outputStyles: false })}}`;
             break;
 
         case 'error':

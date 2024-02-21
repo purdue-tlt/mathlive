@@ -588,7 +588,7 @@ MathAtom.MathAtom.prototype.toLatex = function(options) {
             break;
 
         case 'variable':
-            result += `\\variable{${latexify(this, this.body, options)}}`;
+            result += `\\variable{${latexify(this, this.body, { ...options, outputStyles: false })}}`;
             break;
 
         case 'error':
