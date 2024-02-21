@@ -3388,7 +3388,7 @@ MathField.prototype.$applyStyle = function(style) {
         // This style will be used the next time an atom is inserted
     } else {
         // Change the style of the selection
-        this.mathlist._applyStyle(style);
+        this.mathlist.applyStyle_(style);
         this.undoManager.snapshot(this.config);
     }
 
@@ -3504,10 +3504,10 @@ MathField.prototype.$setConfig = function(conf) {
     this.config.macros = Object.assign({}, Definitions.MACROS, this.config.macros);
 
     // Validate the namespace (used for `data-` attributes)
-    if (!/^[a-z]*[-]?$/.test(this.config.namespace)) {
+    if (this.config.namespace && !/^[a-z]*[-]?$/.test(this.config.namespace)) {
         throw Error('options.namespace must be a string of lowercase characters only');
     }
-    if (!/-$/.test(this.config.namespace)) {
+    if (this.config.namespace && !/-$/.test(this.config.namespace)) {
         this.config.namespace += '-';
     }
 
