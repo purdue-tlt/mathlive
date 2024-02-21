@@ -122,7 +122,7 @@ function latexifyArray(parent, properties, atoms, options, targetProperty = 0) {
             if (prop === 'fontShape' && propValue === 'it') {
                 prefix = '\\mathit{';
                 suffix = '}';
-            } else if (prop === 'fontSeries' && propValue === 'b') {
+            } else if (prop === 'fontSeries' && propValue === 'b' || prop === 'fontShape' && propValue === 'n' && atom['fontSeries'] === 'b') {
                 prefix = '\\mathbf{';
                 suffix = '}';
             } else if (prop === 'fontSeries' && propValue !== 'n') {

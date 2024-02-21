@@ -2210,10 +2210,6 @@ defineSymbol( '\\exponentialE',  'cmr',  MATHORD, 'e'); // NOTE: not a real TeX 
 // NOTE: set in math as per ISO 80000-2:2009.
 
 
-defineSymbol('\\g', 'cmr', MATHORD, 'g')
-defineSymbol('\\kg', 'cmr', MATHORD, 'kg')
-
-
 defineSymbol( '\\Finv',  AMS,  MATHORD, '\u2132', 3);
 defineSymbol( '\\Game',  AMS,  MATHORD, '\u2141', 1);
 
