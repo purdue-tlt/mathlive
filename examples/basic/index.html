@@ -17,10 +17,14 @@
         }
         .mathfield {
             border: 1px solid #ddd;
-            padding:5px;
+            padding:10px;
             margin: 10px 0 10px 0;
             border-radius:5px;
             background-color: #fff;
+            font-size: 24px;
+        }
+        .ML__fieldcontainer__field {
+            overflow: visible;
         }
         #output {
             padding:5px;
@@ -37,17 +41,19 @@
 <body>
     <main>
         <h2>MathLive Basic Example</h2>
-        <div class="mathfield" id='mf' >100\kg</div>
+        <pre>A\mathbb{A}\mathtt{A}\mathbf{A}\mathcal{A}\mathfrak{A}\mathscr{A}\mathsf{A}</pre>
+        <div class="mathfield" id='mf'>A\mathbb{A}\mathtt{A}\mathbf{A}\mathcal{A}\mathfrak{A}\mathscr{A}\mathsf{A}</div>
         <div id='output'></div>
     </main>
-
 
 <script src="../../dist/mathlive.js"></script>
 <script> 
     const mf = MathLive.makeMathField('mf', {
         onContentDidChange: mf => {
-            document.getElementById('output').innerHTML = mf.$latex(undefined, { outputStyles: false });
-        }
+            const outputLatex = mf.$latex(undefined, { outputStyles: true });
+            document.getElementById('output').innerHTML = outputLatex;
+        },
+        virtualKeyboardMode: 'manual'
     });
 </script>
 
