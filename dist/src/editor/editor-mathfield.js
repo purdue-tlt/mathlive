@@ -1114,7 +1114,11 @@ MathField.prototype.$perform = function(command) {
     // Convert kebab case (like-this) to camel case (likeThis).
     selector = selector.replace(/-\w/g, (m) => m[1].toUpperCase() );
 
-    selector += '_';
+    if (selector === 'applyStyle') {
+        selector = '$' + selector;
+    } else {
+        selector += '_';
+    }
 
     if (typeof this.mathlist[selector] === 'function') {
         if (/^(delete|transpose|add)/.test(selector)) {
