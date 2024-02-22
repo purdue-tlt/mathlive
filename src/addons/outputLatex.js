@@ -40,7 +40,7 @@ function latexifyArray(parent, properties, atoms, options, targetProperty = 0) {
         return '';
     }
 
-    if (targetProperty >= properties.length - 1) {
+    if (targetProperty > properties.length - 1) {
         // We've (recursively) checked all the atoms have the same properties
         return atoms.map(x => x.toLatex(options)).join('');
     }
@@ -58,6 +58,12 @@ function latexifyArray(parent, properties, atoms, options, targetProperty = 0) {
 
     // find the "run", amount of consecutive atoms, that all share the same value for `prop`
     const i = findLongestRun(atoms, prop, propValue);
+
+    const isDefaultFontFamily = 
+        // default for numbers
+        (atom.autoFontFamily === 'cmr' && !atom.fontFamily && !atom.baseFontFamily && atom.fontSeries === 'm' && atom.fontShape === 'n') ||
+        // default for letters
+        (atom.autoFontFamily === 'math' && !atom.fontFamily && !atom.baseFontFamily && atom.fontSeries === 'm' && atom.fontShape === 'it')
 
     // set the latex `prefix` and `suffix` to wrap the atoms in the `prop`'s style
     if (propValue || prop === 'mode') {
@@ -119,60 +125,48 @@ function latexifyArray(parent, properties, atoms, options, targetProperty = 0) {
                 }
             }
         } else if (atom.mode === 'math') {
-            if (prop === 'fontShape' && propValue === 'it') {
-                prefix = '\\mathit{';
-                suffix = '}';
-            } else if (prop === 'fontSeries' && propValue === 'b' || prop === 'fontShape' && propValue === 'n' && atom['fontSeries'] === 'b') {
-                prefix = '\\mathbf{';
-                suffix = '}';
-            } else if (prop === 'fontShape') {
-                if (propValue === 'n') {
-                    prefix = '{\\upshape ';
+            if (prop === 'fontFamily' && !/^(math|main)$/.test(propValue)) { // excludes `main` and `math`
+                const command = {
+                    'cal': 'mathcal',
+                    'frak': 'mathfrak',
+                    'bb': 'mathbb',
+                    'scr': 'mathscr',
+                    'cmr': 'mathrm',
+                    'cmtt': 'mathtt',
+                    'cmss': 'mathsf'
+                }[propValue] || '';
+                if (!command) {
+                    prefix += '{\\fontfamily{' + propValue + '}';
                     suffix = '}';
                 } else {
-                    prefix = '{\\fontshape{' + propValue + '}';
-                    suffix = '}';
-                }
-            } else if (prop === 'fontSeries' && propValue !== 'n') {
-                prefix = '{\\fontseries{' + propValue + '}';
-                suffix = '}';
-            }else if (prop === 'fontFamily') {
-                if (!/^(math|main)$/.test(propValue)) {
-                    const command = {
-                        'cal': 'mathcal', 
-                        'frak': 'mathfrak', 
-                        'bb': 'mathbb',
-                        'scr': 'mathscr',
-                        'cmr': 'mathrm',
-                        'cmtt': 'mathtt',
-                        'cmss': 'mathsf'
-                    }[propValue] || '';
-                    if (!command) {
-                        prefix += '{\\fontfamily{' + propValue + '}';
+                    if (/^\\operatorname{/.test(atom.latex)) {
+                        return atom.latex + latexifyArray(parent, properties, atoms.slice(i), options);
+                    }
+                    if (!atom.isFunction) {
+                        prefix = '\\' + command + '{';
                         suffix = '}';
-                    } else {
-                        if (/^\\operatorname{/.test(atom.latex)) {
-                            return atom.latex + latexifyArray(parent, properties, atoms.slice(i), options);
-                        }
-                        if (!atom.isFunction) {
-                            prefix = '\\' + command + '{';
-                            suffix = '}';
-                        }
-                        // These command have an implicit fontSeries/fontShape, so
-                        // skip remaining properties
-                        targetProperty = properties.length
                     }
                 }
+            } else if (prop === 'fontShape' && 
+                (propValue !== 'n' || atom.autoFontFamily === 'math' && !atom.fontFamily && !atom.baseFontFamily) && 
+                !isDefaultFontFamily
+            ) {
+                prefix = '{\\fontshape{' + propValue + '}';
+                suffix = '}';
+            } else if (prop === 'fontSeries' && propValue !== 'n' && propValue !== 'm' && !isDefaultFontFamily
+            ) {
+                prefix = '{\\fontseries{' + propValue + '}';
+                suffix = '}';
             }
         }
 
-        if (prop === 'fontSize' && propValue) {
+        if (prop === 'fontSize' && propValue && propValue !== 'size5') {
             const command = {
                 'size1': 'tiny',
                 'size2': 'scriptsize',
                 'size3': 'footnotesize',
                 'size4': 'small',
-                'size5': 'normalsize',
+                // 'size5': 'normalsize', // do not export default
                 'size6': 'large',
                 'size7': 'Large',
                 'size8': 'LARGE',
@@ -201,6 +195,8 @@ function latexifyArray(parent, properties, atoms, options, targetProperty = 0) {
     const atomsInRun = atoms.slice(0, i);
     const atomsAfterRun = atoms.slice(i);
 
+    console.log('latexifyArray', atom.body, prop, propValue, prefix, suffix, atomsInRun)
+
     // construct result latex string
 
     // wrap the atoms in the "run" in the style for the current `prop`
@@ -217,7 +213,7 @@ function latexifyArray(parent, properties, atoms, options, targetProperty = 0) {
 
     // append the latex result for the atoms after the current "run"
     if (atomsAfterRun.length > 0) {
-        result += latexifyArray(parent, properties, atomsAfterRun, options);
+        result += latexifyArray(parent, properties, atomsAfterRun, options, targetProperty);
     }
 
     return result;

@@ -663,25 +663,25 @@ const LAYERS = {
                 <li class='keycap' data-alt-keys='foreground-color' data-command='["applyStyle",{"color":"#cc2428"}]'><span style='border-radius: 50%;width:22px;height:22px; border: 3px solid #cc2428'></span></li>
                 <li class='keycap' data-alt-keys='background-color' data-command='["applyStyle",{"backgroundColor":"#fff590"}]'><span style='border-radius: 50%;width:22px;height:22px; background:#fff590'></span></li>
                 <li class='separator w5'></li>
-                <li class='keycap' data-command='["applyStyle",{"size":"size3"}]' data-latex='\\scriptsize\\text{small}'></li>
-                <li class='keycap' data-command='["applyStyle",{"size":"size5"}]' data-latex='\\scriptsize\\text{normal}'></li>
-                <li class='keycap' data-command='["applyStyle",{"size":"size9"}]' data-latex='\\huge\\text{big}'></li>
+                <li class='keycap' data-command='["applyStyle",{"fontSize":"size3"}]' data-latex='\\scriptsize\\text{small}'></li>
+                <li class='keycap' data-command='["applyStyle",{"fontSize":"size5"}]' data-latex='\\scriptsize\\text{normal}'></li>
+                <li class='keycap' data-command='["applyStyle",{"fontSize":"size9"}]' data-latex='\\huge\\text{big}'></li>
                 <li class='separator w5'></li>
                 <li class='keycap' data-latex='\\langle' data-command='["insert", "\\\\langle", {"smartFence":true}]'></li>
             </ul>
             <ul>
-                <li class='keycap' data-command='["applyStyle",{"series":"l"}]' data-latex='\\fontseries{l}\\text{Ab}'></li>
-                <li class='keycap' data-command='["applyStyle",{"series":"m"}]' data-latex='\\fontseries{m}\\text{Ab}'></li>
-                <li class='keycap' data-command='["applyStyle",{"series":"b"}]' data-latex='\\fontseries{b}\\text{Ab}'></li>
-                <li class='keycap' data-command='["applyStyle",{"series":"bx"}]' data-latex='\\fontseries{bx}\\text{Ab}'></li>
-                <li class='keycap' data-command='["applyStyle",{"series":"sb"}]' data-latex='\\fontseries{sb}\\text{Ab}'></li>
-                <li class='keycap' data-command='["applyStyle",{"series":"c"}]' data-latex='\\fontseries{c}\\text{Ab}'></li>
+                <li class='keycap' data-command='["applyStyle",{"fontSeries":"l"}]' data-latex='\\fontseries{l}\\text{Ab}'></li>
+                <li class='keycap' data-command='["applyStyle",{"fontSeries":"m"}]' data-latex='\\fontseries{m}\\text{Ab}'></li>
+                <li class='keycap' data-command='["applyStyle",{"fontSeries":"b"}]' data-latex='\\fontseries{b}\\text{Ab}'></li>
+                <li class='keycap' data-command='["applyStyle",{"fontSeries":"bx"}]' data-latex='\\fontseries{bx}\\text{Ab}'></li>
+                <li class='keycap' data-command='["applyStyle",{"fontSeries":"sb"}]' data-latex='\\fontseries{sb}\\text{Ab}'></li>
+                <li class='keycap' data-command='["applyStyle",{"fontSeries":"c"}]' data-latex='\\fontseries{c}\\text{Ab}'></li>
             </ul>
             <ul>
-                <li class='keycap' data-command='["applyStyle",{"shape":"up"}]' data-latex='\\textup{Ab}'></li>
-                <li class='keycap' data-command='["applyStyle",{"shape":"it"}]' data-latex='\\textit{Ab}'></li>
-                <li class='keycap' data-command='["applyStyle",{"shape":"sl"}]' data-latex='\\textsl{Ab}'></li>
-                <li class='keycap' data-command='["applyStyle",{"shape":"sc"}]' data-latex='\\textsc{Ab}'></li>
+                <li class='keycap' data-command='["applyStyle",{"fontShape":"n"}]' data-latex='\\textup{Ab}'></li>
+                <li class='keycap' data-command='["applyStyle",{"fontShape":"it"}]' data-latex='\\textit{Ab}'></li>
+                <li class='keycap' data-command='["applyStyle",{"fontShape":"sl"}]' data-latex='\\textsl{Ab}'></li>
+                <li class='keycap' data-command='["applyStyle",{"fontShape":"sc"}]' data-latex='\\textsc{Ab}'></li>
                 <li class='separator w5'></li>
                 <li class='keycap' data-insert='\\emph{#?} ' data-latex='\\text{\\emph{emph}}'></li>
             </ul>
@@ -690,9 +690,9 @@ const LAYERS = {
                 <li class='keycap' data-command='["applyStyle",{"fontFamily":"cmtt"}]' data-latex='\\texttt{Az}'></li>
                 <li class='keycap' data-command='["applyStyle",{"fontFamily":"cmss"}]' data-latex='\\textsf{Az}'></li>
 
-                <li class='keycap' data-command='["applyStyle",{"fontFamily":"bb"}]'  data-latex='\\mathbb{AZ}'></li>
-                <li class='keycap' data-command='["applyStyle",{"fontFamily":"scr"}]'  data-latex='\\mathscr{AZ}'></li>
-                <li class='keycap' data-command='["applyStyle",{"fontFamily":"cal"}]' data-latex='\\mathcal{A1}'></li>
+                <li class='keycap' data-command='["applyStyle",{"fontFamily":"bb"}]'  data-latex='\\mathbb{Az}'></li>
+                <li class='keycap' data-command='["applyStyle",{"fontFamily":"scr"}]'  data-latex='\\mathscr{Az}'></li>
+                <li class='keycap' data-command='["applyStyle",{"fontFamily":"cal"}]' data-latex='\\mathcal{Az}'></li>
                 <li class='keycap' data-command='["applyStyle",{"fontFamily":"frak"}]' data-latex='\\mathfrak{Az}'></li>
             </ul>
         </div>`,

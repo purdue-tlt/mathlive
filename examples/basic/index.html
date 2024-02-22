@@ -41,8 +41,8 @@
 <body>
     <main>
         <h2>MathLive Basic Example</h2>
-        <pre>A\mathbb{A}\mathtt{A}\mathbf{A}\mathcal{A}\mathfrak{A}\mathscr{A}\mathsf{A}</pre>
-        <div class="mathfield" id='mf'>A\mathbb{A}\mathtt{A}\mathbf{A}\mathcal{A}\mathfrak{A}\mathscr{A}\mathsf{A}</div>
+        <pre>A\mathbb{A}\mathtt{A}\bf{A}\mathcal{A}\mathfrak{A}\mathscr{A}\mathsf{A}\mathit{A}</pre>
+        <div class="mathfield" id='mf'>azAZ1234</div>
         <div id='output'></div>
     </main>
 
@@ -51,8 +51,10 @@
     const mf = MathLive.makeMathField('mf', {
         onContentDidChange: mf => {
             const outputLatex = mf.$latex(undefined, { outputStyles: true });
+            console.log(mf.mathlist.root)
             document.getElementById('output').innerHTML = outputLatex;
         },
+        virtualKeyboards: 'style',
         virtualKeyboardMode: 'manual'
     });
 </script>
