@@ -3226,10 +3226,10 @@ EditableMathlist.prototype.addColumnBefore_ = function() {
  * has the style partially applied (i.e. only some sections), remove it from 
  * those sections, and apply it to the entire selection.
  * 
- * @method EditableMathlist#applyStyle
+ * @method EditableMathlist#applyStyle_
  */
 
-EditableMathlist.prototype._applyStyle = function(style) {
+EditableMathlist.prototype.applyStyle_ = function(style) {
     // No selection, nothing to do.
     if (this.isCollapsed()) return;
 
