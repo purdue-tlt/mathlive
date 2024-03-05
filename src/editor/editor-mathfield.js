@@ -2270,11 +2270,14 @@ MathField.prototype.groupIsSelected = function() {
  * @method MathField#$latex
  */
 MathField.prototype.$latex = function(text, options) {
-    options = options || {
-        outputStyles: true
-    };
+    options = options || {};
+    // output styles by default
+    if (options.outputStyles === undefined) {
+        options.outputStyles = true;
+    }
     if (typeof text !== 'undefined') {
         const oldValue = this.mathlist.root.toLatex(options);
+        console.log('$latex', { oldValue, text, options })
         if (text !== oldValue) {
             this.mathlist.insert(text, Object.assign({}, this.config, {
                 insertionMode: 'replaceAll',

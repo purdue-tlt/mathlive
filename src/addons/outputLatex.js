@@ -51,9 +51,9 @@ function latexifyArray(parent, properties, atoms, options, targetProperty = 0) {
 
     // find the first atom's value for the target property
     const prop = properties[targetProperty];
-    const atom = atoms[0]
-    const propValue = prop === 'fontFamily' 
-        ? atom.fontFamily || atom.baseFontFamily 
+    const atom = atoms[0];
+    const propValue = prop === 'fontFamily'
+        ? atom.fontFamily || atom.baseFontFamily
         : atom[prop];
 
     // find the "run", amount of consecutive atoms, that all share the same value for `prop`
@@ -63,7 +63,7 @@ function latexifyArray(parent, properties, atoms, options, targetProperty = 0) {
         // default for numbers
         (atom.autoFontFamily === 'cmr' && !atom.fontFamily && !atom.baseFontFamily && atom.fontSeries === 'm' && atom.fontShape === 'n') ||
         // default for letters
-        (atom.autoFontFamily === 'math' && !atom.fontFamily && !atom.baseFontFamily && atom.fontSeries === 'm' && atom.fontShape === 'it')
+        (atom.autoFontFamily === 'math' && !atom.fontFamily && !atom.baseFontFamily && atom.fontSeries === 'm' && atom.fontShape === 'it');
 
     // set the latex `prefix` and `suffix` to wrap the atoms in the `prop`'s style
     if (propValue || prop === 'mode') {
@@ -71,8 +71,8 @@ function latexifyArray(parent, properties, atoms, options, targetProperty = 0) {
             if (prop === 'mode') {
                 let allAtomsHaveShapeOrSeriesOrFontFamily = true;
                 for (let j = 0; j < i; j++) {
-                    if (!atoms[j].fontSeries && 
-                        !atoms[j].fontShape && 
+                    if (!atoms[j].fontSeries &&
+                        !atoms[j].fontShape &&
                         !atoms[j].fontFamily &&
                         !atoms[j].baseFontFamily) {
                         allAtomsHaveShapeOrSeriesOrFontFamily = false;
@@ -88,24 +88,24 @@ function latexifyArray(parent, properties, atoms, options, targetProperty = 0) {
                 }
             } else if (prop === 'fontShape') {
                 if (propValue === 'it') {
-                    prefix = '\\textit{'
+                    prefix = '\\textit{';
                 } else if (propValue === 'sl') {
-                    prefix = '\\textsl{'
+                    prefix = '\\textsl{';
                 } else if (propValue === 'sc') {
-                    prefix = '\\textsc{'
+                    prefix = '\\textsc{';
                 } else if (propValue === 'n') {
-                    prefix = '\\textup{'
+                    prefix = '\\textup{';
                 } else {
                     prefix = '\\text{\\fontshape{' + propValue + '}';
                 }
                 suffix = '}';
             } else if (prop === 'fontSeries') {
                 if (propValue === 'b') {
-                    prefix = '\\textbf{'
+                    prefix = '\\textbf{';
                 } else if (propValue === 'l') {
-                    prefix = '\\textlf{'
+                    prefix = '\\textlf{';
                 } else if (propValue === 'm') {
-                    prefix = '\\textmd{'
+                    prefix = '\\textmd{';
                 } else {
                     prefix = '\\text{\\fontseries{' + propValue + '}';
                 }
@@ -194,7 +194,7 @@ function latexifyArray(parent, properties, atoms, options, targetProperty = 0) {
     const atomsInRun = atoms.slice(0, i);
     const atomsAfterRun = atoms.slice(i);
 
-    console.log('latexifyArray', atom.body, prop, propValue, prefix, suffix, atomsInRun)
+    console.log('latexifyArray', atom.body, prop, propValue, prefix, suffix, atomsInRun);
 
     // construct result latex string
 
@@ -243,9 +243,9 @@ function latexify(parent, value, options) {
             'fontFamily',
             'fontShape',
             'fontSeries'
-        ]
+        ];
         if (!options.outputStyles) {
-            properties = properties.slice(0, 1)
+            properties = properties.slice(0, 1);
         }
 
         result = latexifyArray(parent, properties, value, options);
