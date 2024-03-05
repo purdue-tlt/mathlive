@@ -147,14 +147,13 @@ function latexifyArray(parent, properties, atoms, options, targetProperty = 0) {
                         suffix = '}';
                     }
                 }
-            } else if (prop === 'fontShape' && 
-                (propValue !== 'n' || atom.autoFontFamily === 'math' && !atom.fontFamily && !atom.baseFontFamily) && 
+            } else if (prop === 'fontShape' &&
+                (propValue !== 'n' || atom.autoFontFamily === 'math' && !atom.fontFamily && !atom.baseFontFamily || atom.type === 'variable') && 
                 !isDefaultFontFamily
             ) {
                 prefix = '{\\fontshape{' + propValue + '}';
                 suffix = '}';
-            } else if (prop === 'fontSeries' && propValue !== 'n' && propValue !== 'm' && !isDefaultFontFamily
-            ) {
+            } else if (prop === 'fontSeries' && propValue !== 'n' && propValue !== 'm' && !isDefaultFontFamily) {
                 prefix = '{\\fontseries{' + propValue + '}';
                 suffix = '}';
             }

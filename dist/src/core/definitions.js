@@ -1763,7 +1763,7 @@ defineFunction('\\textrm', '{:text*}', {allowedInText: true}, (_name, _args) => 
 });
 
 defineFunction('\\mathsf', '{:math*}', {allowedInText: true}, (_name, _args) => {
-    return { mode:'math', baseFontFamily: 'cmss', fontSeries: 'm', fontShape: 'n' }
+    return { mode:'math', fontFamily: 'cmss', fontSeries: 'm', fontShape: 'n' }
 });
 
 defineFunction('\\sffamily', '', {allowedInText: true}, (_name, _args) => {
@@ -1775,7 +1775,7 @@ defineFunction('\\textsf', '{:text*}', {allowedInText: true}, (_name, _args) => 
 });
 
 defineFunction('\\mathtt', '{:math*}', {allowedInText: true}, (_name, _args) => {
-    return { mode:'math', baseFontFamily: 'cmtt', fontSeries: 'm', fontShape: 'n' }
+    return { mode:'math', fontFamily: 'cmtt', fontSeries: 'm', fontShape: 'n' }
 });
 
 defineFunction('\\ttfamily', '', {allowedInText: true}, (_name, _args) => {
@@ -1787,19 +1787,19 @@ defineFunction('\\texttt', '{:text*}', {allowedInText: true}, (_name, _args) => 
 });
 
 defineFunction(['\\Bbb', '\\mathbb'], '{:math*}', {allowedInText: true}, (_name, _args) => {
-    return { mode:'math', baseFontFamily: 'bb' }
+    return { mode:'math', fontFamily: 'bb' }
 });
 
 defineFunction(['\\frak', '\\mathfrak'], '{:math*}', {allowedInText: true}, (_name, _args) => {
-    return { baseFontFamily: 'frak' }
+    return { fontFamily: 'frak' }
 });
 
 defineFunction('\\mathcal', '{:math*}', {allowedInText: true}, (_name, _args) => {
-    return { mode:'math', baseFontFamily: 'cal', fontSeries: 'm', fontShape: 'n' }
+    return { mode:'math', fontFamily: 'cal', fontSeries: 'm', fontShape: 'n' }
 });
 
 defineFunction('\\mathscr', '{:math*}', {allowedInText: true}, (_name, _args) => {
-    return { mode:'math', baseFontFamily: 'scr', fontSeries: 'm', fontShape: 'n' }
+    return { mode:'math', fontFamily: 'scr', fontSeries: 'm', fontShape: 'n' }
 });
 
 
