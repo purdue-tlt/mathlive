@@ -35,197 +35,185 @@ function findLongestRun(atoms, property, value) {
  * @param {object} options
  * @result {string} a LaTeX string
  */
-function latexifyArray(parent, properties, atoms, options) {
-    if (atoms.length === 0) return '';
+function latexifyArray(parent, properties, atoms, options, targetProperty = 0) {
+    if (atoms.length === 0) {
+        return '';
+    }
 
-    if (properties.length === 0) {
-        // We've (recursively) checked:
-        // all the atoms have the same properties
+    if (targetProperty > properties.length - 1) {
+        // We've (recursively) checked all the atoms have the same properties
         return atoms.map(x => x.toLatex(options)).join('');
     }
 
     let result = '';
     let prefix = '';
     let suffix = '';
-    const prop = properties[0];
-    let propValue = atoms[0][prop];
-    if (prop === 'fontFamily') propValue = atoms[0].fontFamily || atoms[0].baseFontFamily;
 
+    // find the first atom's value for the target property
+    const prop = properties[targetProperty];
+    const atom = atoms[0];
+    const propValue = prop === 'fontFamily'
+        ? atom.fontFamily || atom.baseFontFamily
+        : atom[prop];
+
+    // find the "run", amount of consecutive atoms, that all share the same value for `prop`
     const i = findLongestRun(atoms, prop, propValue);
 
-    if (atoms[0].mode === 'text') {
-        if (prop === 'fontShape' && atoms[0].fontShape) {
-            if (atoms[0].fontShape === 'it') {
-                prefix = '\\textit{'
+    const isDefaultFontFamily = 
+        // default for numbers
+        (atom.autoFontFamily === 'cmr' && !atom.fontFamily && !atom.baseFontFamily && atom.fontSeries === 'm' && atom.fontShape === 'n') ||
+        // default for letters
+        (atom.autoFontFamily === 'math' && !atom.fontFamily && !atom.baseFontFamily && atom.fontSeries === 'm' && atom.fontShape === 'it');
+
+    // set the latex `prefix` and `suffix` to wrap the atoms in the `prop`'s style
+    if (propValue || prop === 'mode') {
+        if (atom.mode === 'text') {
+            if (prop === 'mode') {
+                let allAtomsHaveShapeOrSeriesOrFontFamily = true;
+                for (let j = 0; j < i; j++) {
+                    if (!atoms[j].fontSeries &&
+                        !atoms[j].fontShape &&
+                        !atoms[j].fontFamily &&
+                        !atoms[j].baseFontFamily) {
+                        allAtomsHaveShapeOrSeriesOrFontFamily = false;
+                        break;
+                    }
+                }
+                if (!allAtomsHaveShapeOrSeriesOrFontFamily) {
+                    // Wrap in text, only if there isn't a shape or series on 
+                    // all the atoms, because if so, it will be wrapped in a 
+                    // \\textbf, \\textit, etc... and the \\text would be redundant
+                    prefix = '\\text{';
+                    suffix = '}';
+                }
+            } else if (prop === 'fontShape') {
+                if (propValue === 'it') {
+                    prefix = '\\textit{';
+                } else if (propValue === 'sl') {
+                    prefix = '\\textsl{';
+                } else if (propValue === 'sc') {
+                    prefix = '\\textsc{';
+                } else if (propValue === 'n') {
+                    prefix = '\\textup{';
+                } else {
+                    prefix = '\\text{\\fontshape{' + propValue + '}';
+                }
                 suffix = '}';
-            } else if (atoms[0].fontShape === 'sl') {
-                prefix = '\\textsl{'
+            } else if (prop === 'fontSeries') {
+                if (propValue === 'b') {
+                    prefix = '\\textbf{';
+                } else if (propValue === 'l') {
+                    prefix = '\\textlf{';
+                } else if (propValue === 'm') {
+                    prefix = '\\textmd{';
+                } else {
+                    prefix = '\\text{\\fontseries{' + propValue + '}';
+                }
                 suffix = '}';
-            } else if (atoms[0].fontShape === 'sc') {
-                prefix = '\\textsc{'
-                suffix = '}';
-            } else if (atoms[0].fontShape === 'n') {
-                prefix = '\\textup{'
-                suffix = '}';
-            } else {
-                prefix = '\\text{\\fontshape{' + atoms[0].fontShape + '}';
-                suffix = '}';
-            }
-        } else if (prop === 'fontSeries' && atoms[0].fontSeries) {
-            if (atoms[0].fontSeries === 'b') {
-                prefix = '\\textbf{'
-                suffix = '}';
-            } else if (atoms[0].fontSeries === 'l') {
-                prefix = '\\textlf{'
-                suffix = '}';
-            } else if (atoms[0].fontSeries === 'm') {
-                prefix = '\\textmd{'
-                suffix = '}';
-            } else {
-                prefix = '\\text{\\fontseries{' + atoms[0].fontSeries + '}';
-                suffix = '}';
-            }
-        } else if (prop === 'mode') {
-            let allAtomsHaveShapeOrSeriesOrFontFamily = true;
-            for (let j = 0; j < i; j++) {
-                if (!atoms[j].fontSeries && 
-                    !atoms[j].fontShape && 
-                    !atoms[j].fontFamily &&
-                    !atoms[j].baseFontFamily) {
-                    allAtomsHaveShapeOrSeriesOrFontFamily = false;
-                    break;
+            } else if (prop === 'fontFamily') {
+                const command = {
+                    'cmr': 'textrm',
+                    'cmtt': 'texttt',
+                    'cmss': 'textsf'
+                }[propValue] || '';
+                if (!command) {
+                    prefix += '{\\fontfamily{' + propValue + '}';
+                    suffix = '}';
+                } else {
+                    prefix = '\\' + command + '{';
+                    suffix = '}';
                 }
             }
-            if (!allAtomsHaveShapeOrSeriesOrFontFamily) {
-                // Wrap in text, only if there isn't a shape or series on 
-                // all the atoms, because if so, it will be wrapped in a 
-                // \\textbf, \\textit, etc... and the \\text would be redundant
-                prefix = '\\text{';
-                suffix = '}';
-            }
-        } else if (prop === 'fontSize' && atoms[0].fontSize) {
-            const command = {
-                'size1': 'tiny',
-                'size2': 'scriptsize',
-                'size3': 'footnotesize',
-                'size4': 'small',
-                'size5': 'normalsize',
-                'size6': 'large',
-                'size7': 'Large',
-                'size8': 'LARGE',
-                'size9': 'huge',
-                'size10': 'Huge'
-            }[atoms[0].fontSize] || '';
-            prefix = '{\\' + command + ' ';
-            suffix = '}';
-
-        } else if (prop === 'fontFamily' && 
-            (atoms[0].fontFamily || atoms[0].baseFontFamily)) {
-            const command = {
-                'cmr': 'textrm',
-                'cmtt': 'texttt',
-                'cmss': 'textsf'
-            }[atoms[0].fontFamily || atoms[0].baseFontFamily] || '';
-            if (!command) {
-                prefix += '{\\fontfamily{' + (atoms[0].fontFamily || atoms[0].baseFontFamily) + '}';
-                suffix = '}';
-            } else {
-                prefix = '\\' + command + '{';
-                suffix = '}';
-            }
-        }
-    } else if (atoms[0].mode === 'math') {
-        if (prop === 'fontSeries') {
-            if (atoms[0].fontSeries === 'b') {
-                prefix = '\\mathbf{';
-                suffix = '}';
-            } else if (atoms[0].fontSeries && atoms[0].fontSeries !== 'n') {
-                prefix = '{\\fontseries{' + atoms[0].fontSeries + '}';
-                suffix = '}';
-            }
-        } else if (prop === 'fontShape') {
-            if (atoms[0].fontShape === 'it') {
-                prefix = '\\mathit{';
-                suffix = '}';
-            } else if (atoms[0].fontShape === 'n') {
-                prefix = '{\\upshape ';
-                suffix = '}';
-            } else if (atoms[0].fontShape && atoms[0].fontShape !== 'n') {
-                prefix = '{\\fontshape{' + atoms[0].fontShape + '}';
-                suffix = '}';
-            }
-
-        } else if (prop === 'fontSize' && atoms[0].fontSize) {
-            const command = {
-                'size1': 'tiny',
-                'size2': 'scriptsize',
-                'size3': 'footnotesize',
-                'size4': 'small',
-                'size5': 'normalsize',
-                'size6': 'large',
-                'size7': 'Large',
-                'size8': 'LARGE',
-                'size9': 'huge',
-                'size10': 'Huge'
-            }[atoms[0].fontSize] || '';
-            prefix = '{\\' + command + ' ';
-            suffix = '}';
-
-        } else if (prop === 'fontFamily' && ((atoms[0].fontFamily || atoms[0].baseFontFamily))) {
-            if (!/^(math|main)$/.test(atoms[0].fontFamily)) {
+        } else if (atom.mode === 'math') {
+            if (prop === 'fontFamily' && !/^(math|main)$/.test(propValue)) { // excludes `main` and `math`
                 const command = {
-                    'cal': 'mathcal', 
-                    'frak': 'mathfrak', 
+                    'cal': 'mathcal',
+                    'frak': 'mathfrak',
                     'bb': 'mathbb',
                     'scr': 'mathscr',
                     'cmr': 'mathrm',
                     'cmtt': 'mathtt',
                     'cmss': 'mathsf'
-                }[atoms[0].fontFamily || atoms[0].baseFontFamily] || '';
+                }[propValue] || '';
                 if (!command) {
-                    prefix += '{\\fontfamily{' + (atoms[0].fontFamily || atoms[0].baseFontFamily) + '}';
+                    prefix += '{\\fontfamily{' + propValue + '}';
                     suffix = '}';
                 } else {
-                    if (/^\\operatorname{/.test(atoms[0].latex)) {
-                        return atoms[0].latex + latexifyArray(parent, properties, atoms.slice(i), options);
+                    if (/^\\operatorname{/.test(atom.latex)) {
+                        return atom.latex + latexifyArray(parent, properties, atoms.slice(i), options);
                     }
-                    if (!atoms[0].isFunction) {
+                    if (!atom.isFunction) {
                         prefix = '\\' + command + '{';
                         suffix = '}';
                     }
-                    // These command have an implicit fontSeries/fontShape, so
-                    // we're done checking properties now.
-                    properties = [];
                 }
+            } else if (prop === 'fontShape' &&
+                (propValue !== 'n' || atom.autoFontFamily === 'math' && !atom.fontFamily && !atom.baseFontFamily || atom.type === 'variable') && 
+                !isDefaultFontFamily
+            ) {
+                prefix = '{\\fontshape{' + propValue + '}';
+                suffix = '}';
+            } else if (prop === 'fontSeries' && propValue !== 'n' && propValue !== 'm' && !isDefaultFontFamily) {
+                prefix = '{\\fontseries{' + propValue + '}';
+                suffix = '}';
             }
+        }
+
+        if (prop === 'fontSize' && propValue && propValue !== 'size5') {
+            const command = {
+                'size1': 'tiny',
+                'size2': 'scriptsize',
+                'size3': 'footnotesize',
+                'size4': 'small',
+                // 'size5': 'normalsize', // do not export default
+                'size6': 'large',
+                'size7': 'Large',
+                'size8': 'LARGE',
+                'size9': 'huge',
+                'size10': 'Huge'
+            }[propValue] || '';
+            prefix = '{\\' + command + ' ';
+            suffix = '}';
+        }
+
+        if (prop === 'color' && propValue &&
+            propValue !== 'none' &&
+            (!parent || parent.color !== propValue)) {
+            prefix = '\\textcolor{' + Color.colorToString(propValue) + '}{';
+            suffix = '}';
+        }
+
+        if (prop === 'backgroundColor' && propValue &&
+            propValue !== 'none' &&
+            (!parent || parent.backgroundColor !== propValue)) {
+            prefix = '\\colorbox{' + Color.colorToString(propValue) + '}{';
+            suffix = '}';
         }
     }
 
-    if (prop === 'color' && atoms[0].color &&
-         atoms[0].color !== 'none' &&
-         (!parent || parent.color !== atoms[0].color)) {
-        prefix = '\\textcolor{' + Color.colorToString(atoms[0].color) + '}{';
-        suffix = '}';
-    }
+    const atomsInRun = atoms.slice(0, i);
+    const atomsAfterRun = atoms.slice(i);
 
-    if (prop === 'backgroundColor' && atoms[0].backgroundColor &&
-         atoms[0].backgroundColor !== 'none' &&
-         (!parent || parent.backgroundColor !== atoms[0].backgroundColor)) {
-        prefix = '\\colorbox{' + Color.colorToString(atoms[0].backgroundColor) + '}{';
-        suffix = '}';
-    }
+    console.log('latexifyArray', atom.body, prop, propValue, prefix, suffix, atomsInRun);
 
+    // construct result latex string
+
+    // wrap the atoms in the "run" in the style for the current `prop`
     result += prefix;
 
-    result += latexifyArray(parent, 
-        properties.slice(1), 
-        atoms.slice(0, i), 
-        options);
+    // recurse to the next property for the atoms in the "run", to apply the remaining possible property styles
+    result += latexifyArray(parent,
+        properties,
+        atomsInRun,
+        options,
+        targetProperty + 1);
 
     result += suffix;
 
-    // latexify the rest
-    result += latexifyArray(parent, properties, atoms.slice(i), options);
+    // append the latex result for the atoms after the current "run"
+    if (atomsAfterRun.length > 0) {
+        result += latexifyArray(parent, properties, atomsAfterRun, options, targetProperty);
+    }
 
     return result;
 }
@@ -248,16 +236,16 @@ function latexify(parent, value, options) {
         }
 
         let properties = [
-            'mode', 
-            'color', 
-            'backgroundColor', 
+            'mode',
+            'color',
+            'backgroundColor',
             'fontSize',
             'fontFamily',
-            'fontShape', 
-            'fontSeries', 
-        ]
+            'fontShape',
+            'fontSeries'
+        ];
         if (!options.outputStyles) {
-            properties = properties.slice(0, 1)
+            properties = properties.slice(0, 1);
         }
 
         result = latexifyArray(parent, properties, value, options);
@@ -299,6 +287,7 @@ MathAtom.MathAtom.prototype.toLatex = function(options) {
     let i = 0;
     const m = !this.latex ? null : this.latex.match(/^(\\[^{\s0-9]+)/);
     const command = m ? m[1] : null;
+
     switch(this.type) {
         case 'group':
             result += this.latexOpen || ((this.cssId || this.cssClass) && options.outputStyles ? '' : '{');
@@ -594,7 +583,7 @@ MathAtom.MathAtom.prototype.toLatex = function(options) {
             break;
 
         case 'variable':
-            result += `\\variable{${latexify(this, this.body, options)}}`;
+            result += `\\variable{${latexify(this, this.body, { ...options, outputStyles: false })}}`;
             break;
 
         case 'error':

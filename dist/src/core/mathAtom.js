@@ -154,6 +154,7 @@ class MathAtom {
 
         if (this.fontFamily === 'none') {
             this.fontFamily = '';
+            delete this.baseFontFamily;
         }
         if (this.fontShape === 'auto') {
             this.fontShape = '';

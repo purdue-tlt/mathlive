@@ -1114,7 +1114,11 @@ MathField.prototype.$perform = function(command) {
     // Convert kebab case (like-this) to camel case (likeThis).
     selector = selector.replace(/-\w/g, (m) => m[1].toUpperCase() );
 
-    selector += '_';
+    if (selector === 'applyStyle') {
+        selector = '$' + selector;
+    } else {
+        selector += '_';
+    }
 
     if (typeof this.mathlist[selector] === 'function') {
         if (/^(delete|transpose|add)/.test(selector)) {
@@ -2252,7 +2256,7 @@ MathField.prototype.groupIsSelected = function() {
 /**
  * If `text` is not empty, sets the content of the mathfield to the
  * text interpreted as a LaTeX expression.
- * If `text` is empty (or omitted), return the content of the mahtfield as a
+ * If `text` is empty (or omitted), return the content of the mathfield as a
  * LaTeX expression.
  * @param {string} text
  * 
@@ -2266,11 +2270,14 @@ MathField.prototype.groupIsSelected = function() {
  * @method MathField#$latex
  */
 MathField.prototype.$latex = function(text, options) {
-    options = options || {
-        outputStyles: true
-    };
+    options = options || {};
+    // output styles by default
+    if (options.outputStyles === undefined) {
+        options.outputStyles = true;
+    }
     if (typeof text !== 'undefined') {
         const oldValue = this.mathlist.root.toLatex(options);
+        console.log('$latex', { oldValue, text, options })
         if (text !== oldValue) {
             this.mathlist.insert(text, Object.assign({}, this.config, {
                 insertionMode: 'replaceAll',
@@ -3388,7 +3395,7 @@ MathField.prototype.$applyStyle = function(style) {
         // This style will be used the next time an atom is inserted
     } else {
         // Change the style of the selection
-        this.mathlist._applyStyle(style);
+        this.mathlist.applyStyle_(style);
         this.undoManager.snapshot(this.config);
     }
 
@@ -3504,10 +3511,10 @@ MathField.prototype.$setConfig = function(conf) {
     this.config.macros = Object.assign({}, Definitions.MACROS, this.config.macros);
 
     // Validate the namespace (used for `data-` attributes)
-    if (!/^[a-z]*[-]?$/.test(this.config.namespace)) {
+    if (this.config.namespace && !/^[a-z]*[-]?$/.test(this.config.namespace)) {
         throw Error('options.namespace must be a string of lowercase characters only');
     }
-    if (!/-$/.test(this.config.namespace)) {
+    if (this.config.namespace && !/-$/.test(this.config.namespace)) {
         this.config.namespace += '-';
     }
 
