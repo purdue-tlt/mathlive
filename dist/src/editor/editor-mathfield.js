@@ -2264,17 +2264,17 @@ MathField.prototype.groupIsSelected = function() {
  * @param {boolean} options.suppressChangeNotifications - If true, the
  * handlers for the contentWillChange and contentDidChange notifications will 
  * not be invoked. Default `false`.
- * @param {boolean} options.outputStyles - If false, will not output any font, color, or style related commands.
+ * @param {boolean} options.outputStyles - If true, will output any font, color, or style related commands. Default is `false`.
 
  * @return {string}
  * @method MathField#$latex
  */
 MathField.prototype.$latex = function(text, options) {
     options = options || {};
-    // output styles by default
-    if (options.outputStyles === undefined) {
-        options.outputStyles = true;
-    }
+    // coerce options to boolean values
+    options.suppressChangeNotifications = !!options.suppressChangeNotifications;
+    options.outputStyles = !!options.outputStyles;
+
     if (typeof text !== 'undefined') {
         const oldValue = this.mathlist.root.toLatex(options);
         console.log('$latex', { oldValue, text, options })
