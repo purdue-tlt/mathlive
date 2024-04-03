@@ -771,8 +771,8 @@ class MathAtom {
 
         // Adjust the clearance based on the delimiter size
         // if body + clearance is shorter than visible delimiter size, vertically center the body
-        if (visibleDelimSize > innerSizeMin + lineClearance) {
-            lineClearance = (visibleDelimSize - innerSizeMin) / 2;
+        if (visibleDelimSize > innerSize + lineClearance) {
+           lineClearance = (lineClearance + visibleDelimSize - innerSize) / 2;
         }
 
         // Shift the delimiter so that its top lines up with the top of the line

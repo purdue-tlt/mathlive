@@ -514,7 +514,6 @@ function makeCustomSizedDelim(type, delim, height, center, context, classes) {
     // Look through the sequence
     const delimType = traverseSequence(Definitions.getValue('math', delim),
         height, sequence, context);
-    console.log({ delimType })
 
     // Depending on the sequence element we decided on, call the appropriate
     // function.
