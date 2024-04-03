@@ -767,27 +767,12 @@ class MathAtom {
         delim.applyStyle(this.getStyle());
 
         // The size of the delimiter that extends below the sqrt-line
-        const visibleDelimSize = (delim.height + delim.depth) - ruleWidth;
-
-        console.log({
-            phi,
-            sizeMultiplier: mathstyle.sizeMultiplier,
-            ruleWidth,
-            lineClearance,
-            innerSpanHeight: Span.height(inner),
-            innerSpanDepth: Span.depth(inner),
-            innerSize,
-            innerSizeMin,
-            minDelimiterHeight,
-            dHeight: delim.height,
-            dDepth: delim.depth,
-            visibleDelimSize
-        })
+        const visibleDelimSize = ((delim.height + delim.depth) * mathstyle.sizeMultiplier) - ruleWidth;
 
         // Adjust the clearance based on the delimiter size
         // if body + clearance is shorter than visible delimiter size, vertically center the body
-        if (visibleDelimSize > innerSizeMin + lineClearance) {
-           lineClearance = (visibleDelimSize - innerSizeMin) / 2;
+        if (visibleDelimSize > innerSize + lineClearance) {
+           lineClearance = (lineClearance + visibleDelimSize - innerSize) / 2;
         }
 
         // Shift the delimiter so that its top lines up with the top of the line
@@ -799,16 +784,6 @@ class MathAtom {
         line.height = ruleWidth;
 
         const body = makeVlist(context, [inner, lineClearance, line, ruleWidth]);
-
-        console.log({
-            delimTop,
-            delimTopRounded: Math.floor(1e2 * delimTop) / 1e2,
-            lineClearance,
-            vlistHeight: body.height,
-            lineWrapHeight: body.children[1].height,
-            lineWrapDepth: body.children[1].depth,
-            lineTopRounded: Math.floor(1e2 * body.children[1].depth) / 1e2,
-        })
 
         if (!this.index) {
             return this.bind(context, makeOrd([delim, body], 'sqrt'));
