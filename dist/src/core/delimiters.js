@@ -42,7 +42,7 @@ const makeVlist = Span.makeVlist;
  * @private
  */
 function makeSmallDelim(type, delim, style, center, context, classes) {
-    const text = makeSymbol('AMS-Regular', Definitions.getValue('math', delim));
+    const text = makeSymbol('Main-Regular', Definitions.getValue('math', delim));
 
     const span = Span.makeStyleWrap(type, text, context.mathstyle, style, classes);
 
@@ -514,15 +514,14 @@ function makeCustomSizedDelim(type, delim, height, center, context, classes) {
     // Look through the sequence
     const delimType = traverseSequence(Definitions.getValue('math', delim),
         height, sequence, context);
+    console.log({ delimType })
 
     // Depending on the sequence element we decided on, call the appropriate
     // function.
     if (delimType.type === 'small') {
-        return makeSmallDelim(type, delim, delimType.mathstyle, center, context,
-                              classes);
+        return makeSmallDelim(type, delim, delimType.mathstyle, center, context, classes);
     } else if (delimType.type === 'large') {
-        return makeLargeDelim(type, delim, delimType.size, center, context,
-                              classes);
+        return makeLargeDelim(type, delim, delimType.size, center, context, classes);
     }
     console.assert(delimType.type === 'stack');
     return makeStackedDelim(type, delim, height, center, context, classes);
