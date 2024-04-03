@@ -231,11 +231,17 @@
                 margin-top: -0.04em;
                 border-bottom-style: solid;
                 border-bottom-width: 0.04em;
-                min-height: 0.04em;
-                 /* There's a bug since Chrome 62 where
+                /* There's a bug since Chrome 62 where
                 sub-pixel border lines don't draw at some zoom
                 levels (110%, 90%). Setting the min-height seems to work around it.
                 */
+                min-height: 0.5px;
+
+                // content: " ";
+                // display: block;
+                // height: 0.04em;
+                // min-height: 1px;
+                // background-color: currentColor;
             }
         }
     }
@@ -376,10 +382,11 @@
         &:after {
             border-bottom-style: solid;
             border-bottom-width: 0.04em;
-            min-height: thin;    /* There's a bug since Chrome 62 where
+            /* There's a bug since Chrome 62 where
             sub-pixel border lines don't draw at some zoom
             levels (110%, 90%). Setting the min-height seems to work around it.
             */
+            min-height: thin;
             content: "";
             display: block;
             margin-top: -1px;
@@ -396,21 +403,27 @@
 
         .sqrt-line {
             // line-height: 0;
-            height: 0.04em;
-            min-height: 1px;
+            // height: 0.04em;
+            // min-height: 1px;
             width: 100%;
 
             &:after {
-                content: " ";
+                content: "";
                 display: block;
-                // margin-top: -0.04em;
-                height: 0.04em;
-                min-height: 1px;
-                background-color: currentColor;
+                margin-top: -0.04em;
+                border-bottom-style: solid;
+                border-bottom-width: 0.04em;
                 /* There's a bug since Chrome 62 where
                 sub-pixel border lines don't draw at some zoom
                 levels (110%, 90%). Setting the min-height seems to work around it.
                 */
+                min-height: 0.5px;
+
+                // content: " ";
+                // display: block;
+                // height: 0.04em;
+                // min-height: 1px;
+                // background-color: currentColor;
             }
         }
 
