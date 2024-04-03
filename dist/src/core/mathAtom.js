@@ -751,37 +751,64 @@ class MathAtom {
         // First, we do the same steps as in overline to build the inner group
         // and line
         const inner = decompose(context.cramp(), this.body);
-        const ruleWidth = FONTMETRICS.defaultRuleThickness /
-            mathstyle.sizeMultiplier;
+        const ruleWidth = FONTMETRICS.defaultRuleThickness * mathstyle.sizeMultiplier;
         let phi = ruleWidth;
         if (mathstyle.id < Mathstyle.TEXT.id) {
             phi = mathstyle.metrics.xHeight;
         }
         // Calculate the clearance between the body and line
         let lineClearance = ruleWidth + phi / 4;
-        const innerTotalHeight = Math.max(2 * phi, (Span.height(inner) + Span.depth(inner)) * mathstyle.sizeMultiplier);
-        const minDelimiterHeight = innerTotalHeight + (lineClearance + ruleWidth);
+        const innerSize = Span.height(inner) + Span.depth(inner);
+        const innerSizeMin = Math.max(2 * phi, innerSize * mathstyle.sizeMultiplier);
+        const minDelimiterHeight = innerSizeMin + (lineClearance + ruleWidth);
 
         // Create a \surd delimiter of the required minimum size
         const delim = makeSpan(Delimiters.makeCustomSizedDelim('', '\\surd', minDelimiterHeight, false, context), 'sqrt-sign');
         delim.applyStyle(this.getStyle());
 
-        const delimDepth = (delim.height + delim.depth) - ruleWidth;
+        // The size of the delimiter that extends below the sqrt-line
+        const visibleDelimSize = (delim.height + delim.depth) - ruleWidth;
+
+        console.log({
+            phi,
+            sizeMultiplier: mathstyle.sizeMultiplier,
+            ruleWidth,
+            lineClearance,
+            innerSpanHeight: Span.height(inner),
+            innerSpanDepth: Span.depth(inner),
+            innerSize,
+            innerSizeMin,
+            minDelimiterHeight,
+            dHeight: delim.height,
+            dDepth: delim.depth,
+            visibleDelimSize
+        })
 
         // Adjust the clearance based on the delimiter size
-        if (delimDepth > Span.height(inner) + Span.depth(inner) + lineClearance) {
-            lineClearance =
-                (lineClearance + delimDepth - (Span.height(inner) + Span.depth(inner))) / 2;
+        // if body + clearance is shorter than visible delimiter size, vertically center the body
+        if (visibleDelimSize > innerSizeMin + lineClearance) {
+           lineClearance = (visibleDelimSize - innerSizeMin) / 2;
         }
 
         // Shift the delimiter so that its top lines up with the top of the line
-        delim.setTop((delim.height - Span.height(inner)) -
-            (lineClearance + ruleWidth));
+        const delimTop = delim.height - Span.height(inner) - lineClearance - ruleWidth
+        delim.setTop(delimTop);
+
         const line = makeSpan(null, context.mathstyle.adjustTo(Mathstyle.TEXT) + ' sqrt-line');
         line.applyStyle(this.getStyle());
         line.height = ruleWidth;
 
         const body = makeVlist(context, [inner, lineClearance, line, ruleWidth]);
+
+        console.log({
+            delimTop,
+            delimTopRounded: Math.floor(1e2 * delimTop) / 1e2,
+            lineClearance,
+            vlistHeight: body.height,
+            lineWrapHeight: body.children[1].height,
+            lineWrapDepth: body.children[1].depth,
+            lineTopRounded: Math.floor(1e2 * body.children[1].depth) / 1e2,
+        })
 
         if (!this.index) {
             return this.bind(context, makeOrd([delim, body], 'sqrt'));

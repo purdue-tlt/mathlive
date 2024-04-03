@@ -6,14 +6,8 @@ export default [{
   plugins: [
     terser({
       sourcemap: false,
-      compress: {
-          drop_console: true,
-          drop_debugger: true,
-          ecma: 8,
-          module: true,
-          warnings: true,
-          passes: 2
-      }
+      compress: false,
+      mangle: false
     }),
     copy({ 
       targets: [

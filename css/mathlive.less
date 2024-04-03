@@ -397,26 +397,20 @@
         .sqrt-line {
             // line-height: 0;
             height: 0.04em;
+            min-height: 1px;
             width: 100%;
 
-            &:before {
-                content: "";
+            &:after {
+                content: " ";
                 display: block;
-                margin-top: -0.04em;
-                border-bottom-style: solid;
-                border-bottom-width: .04em;
-                min-height: 0.5px;
+                // margin-top: -0.04em;
+                height: 0.04em;
+                min-height: 1px;
+                background-color: currentColor;
                 /* There's a bug since Chrome 62 where
                 sub-pixel border lines don't draw at some zoom
                 levels (110%, 90%). Setting the min-height seems to work around it.
                 */
-            }
-
-            &:after {
-                border-bottom-width: 1px;
-                content: " ";
-                display: block;
-                margin-top: -0.1em;
             }
         }
 
