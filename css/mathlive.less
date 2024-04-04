@@ -218,24 +218,17 @@
        .frac-line {
             width: 100%;
 
-            // &:before {
-            //     border-bottom-style: solid;
-            //     border-bottom-width: 1px;
-            //     content: "";
-            //     display: block;
-            // }
-
             &:after {
                 content: "";
                 display: block;
                 margin-top: -0.04em;
                 border-bottom-style: solid;
                 border-bottom-width: 0.04em;
-                min-height: 0.04em;
-                 /* There's a bug since Chrome 62 where
+                /* There's a bug since Chrome 62 where
                 sub-pixel border lines don't draw at some zoom
                 levels (110%, 90%). Setting the min-height seems to work around it.
                 */
+                min-height: 0.5px;
             }
         }
     }
@@ -376,10 +369,11 @@
         &:after {
             border-bottom-style: solid;
             border-bottom-width: 0.04em;
-            min-height: thin;    /* There's a bug since Chrome 62 where
+            /* There's a bug since Chrome 62 where
             sub-pixel border lines don't draw at some zoom
             levels (110%, 90%). Setting the min-height seems to work around it.
             */
+            min-height: thin;
             content: "";
             display: block;
             margin-top: -1px;
@@ -395,28 +389,20 @@
         }
 
         .sqrt-line {
-            // line-height: 0;
             height: 0.04em;
             width: 100%;
 
-            &:before {
+            &:after {
                 content: "";
                 display: block;
                 margin-top: -0.04em;
                 border-bottom-style: solid;
-                border-bottom-width: .04em;
-                min-height: 0.5px;
+                border-bottom-width: 0.04em;
                 /* There's a bug since Chrome 62 where
                 sub-pixel border lines don't draw at some zoom
                 levels (110%, 90%). Setting the min-height seems to work around it.
                 */
-            }
-
-            &:after {
-                border-bottom-width: 1px;
-                content: " ";
-                display: block;
-                margin-top: -0.1em;
+                min-height: 0.5px;
             }
         }
 
