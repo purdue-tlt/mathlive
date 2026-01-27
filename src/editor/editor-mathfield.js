@@ -178,7 +178,7 @@ function MathField(element, config) {
         } else {
             markup += '<span class="ML__textarea">' +
                 '<textarea class="ML__textarea__textarea" autocapitalize="off" autocomplete="off" ' +
-                'autocorrect="off" spellcheck="false" aria-hidden="true" tabindex="0">' +
+                'autocorrect="off" spellcheck="false" tabindex="0">' +
                 '</textarea>' +
             '</span>';
         }
@@ -970,8 +970,13 @@ function speakableText(mathfield, prefix, atoms) {
         target._resetKeystrokeBuffer();
     } else if (command === 'delete') {
         liveText = speakableText(target, 'deleted: ', atomsToSpeak);
+    } else if (command === 'focus') {
+        // the "aria-label" will be announced first, see `_renderAccessibleNode`
+        // then announce the current location
+        liveText = (target.mathlist.isCollapsed() ? '' : 'selected: ') +
+                    target._nextAtomSpeechText(oldMathlist);
     //*** FIX: could also be moveUp or moveDown -- do something different like provide context???
-    } else if (command === 'focus' || /move/.test(command)) {
+    } else if (/move/.test(command)) {
         //*** FIX -- should be xxx selected/unselected */
         liveText = (target.mathlist.isCollapsed() ? '' : 'selected: ') +
                     target._nextAtomSpeechText(oldMathlist);
@@ -981,12 +986,6 @@ function speakableText(mathfield, prefix, atoms) {
     } else if (command === 'line') {
         // announce the current line -- currently that's everything
         liveText = speakableText(target, '', target.mathlist.root);
-        target.accessibleNode.innerHTML =
-            '<math xmlns="http://www.w3.org/1998/Math/MathML">' +
-                MathAtom.toMathML(target.mathlist.root, target.config) +
-            '</math>';
-
-        target.textarea.setAttribute('aria-label', 'after: ' + liveText)
 
         /*** FIX -- testing hack for setting braille ***/
         // target.accessibleNode.focus();
@@ -998,12 +997,17 @@ function speakableText(mathfield, prefix, atoms) {
     } else {
         liveText = atomsToSpeak ? speakableText(target, command + " ", atomsToSpeak) : command;
     }
-    // aria-live regions are only spoken when it changes; force a change by
-    // alternately using nonbreaking space or narrow nonbreaking space
-    const ariaLiveChangeHack = /\u00a0/.test(target.ariaLiveText.textContent) ?
-        ' \u202f ' : ' \u00a0 ';
-    target.ariaLiveText.textContent = liveText + ariaLiveChangeHack;
-    // this.textarea.setAttribute('aria-label', liveText + ariaLiveChangeHack);
+
+    if (liveText) {
+        // aria-live regions are only spoken when it changes; force a change by
+        // alternately using nonbreaking space or narrow nonbreaking space
+        const ariaLiveChangeHack = /\u00a0/.test(target.ariaLiveText.textContent) ?
+            ' \u202f ' : ' \u00a0 ';
+        target.ariaLiveText.textContent = liveText + ariaLiveChangeHack;
+        // this.textarea.setAttribute('aria-label', liveText + ariaLiveChangeHack);
+    }
+
+    console.log('_onAnnounce', { command, oldMathlist, atomsToSpeak }, liveText)
 }
 
 
@@ -1025,6 +1029,7 @@ MathField.prototype._onFocus = function() {
             this.showVirtualKeyboard_();
         }
         Popover.updatePopoverPosition(this);
+        this._announce('focus');
         if (this.config.onFocus) this.config.onFocus(this);
         this._requestUpdate();
     }
@@ -1920,6 +1925,15 @@ MathField.prototype._requestUpdate = function() {
     }
 }
 
+MathField.prototype._renderAccessibleNode = function() {
+    const liveText = speakableText(this, '', this.mathlist.root);
+    this.accessibleNode.innerHTML =
+       "MathML summary, <math xmlns='http://www.w3.org/1998/Math/MathML'>" +
+           MathAtom.toMathML(this.mathlist.root, this.config) +
+       "</math>";
+    this.textarea.setAttribute('aria-label', 'mathfield: ' + liveText)
+}
+
 /**
  * Lay-out the math field and generate the DOM.
  *
@@ -2014,10 +2028,7 @@ MathField.prototype._render = function(renderOptions) {
     this.field.innerHTML = wrapper.toMarkup(0, this.config.horizontalSpacingScale);
     this.field.classList.toggle('ML__focused', hasFocus);
     // Probably want to generate content on the fly depending on what to speak
-    this.accessibleNode.innerHTML =
-       "<math xmlns='http://www.w3.org/1998/Math/MathML'>" +
-           MathAtom.toMathML(this.mathlist.root, this.config) +
-       "</math>";
+    this._renderAccessibleNode();
     //this.ariaLiveText.textContent = "";
 
     //
