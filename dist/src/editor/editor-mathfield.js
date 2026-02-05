@@ -992,7 +992,7 @@ function speakableText(mathfield, prefix, atoms) {
         liveText = speakableText(target, '', target.mathlist.sibling(0));
     } else if (command === 'command') {
          // announce the command
-        liveText = speakableText(target, 'inserted: ', target.mathlist.sibling(0)) + '. End command mode.';
+        liveText = speakableText(target, 'inserted: ', target.mathlist.sibling(0)) + '; End command mode.';
     } else if (command === 'line') {
         // announce the current line -- currently that's everything
         liveText = speakableText(target, '', target.mathlist.root);
