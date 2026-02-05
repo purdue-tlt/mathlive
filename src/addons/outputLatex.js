@@ -194,7 +194,7 @@ function latexifyArray(parent, properties, atoms, options, targetProperty = 0) {
     const atomsInRun = atoms.slice(0, i);
     const atomsAfterRun = atoms.slice(i);
 
-    console.log('latexifyArray', atom.body, prop, propValue, prefix, suffix, atomsInRun);
+    // console.log('latexifyArray', atom.body, prop, propValue, prefix, suffix, atomsInRun);
 
     // construct result latex string
 

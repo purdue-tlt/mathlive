@@ -509,6 +509,24 @@ MathAtom.toSpeakableFragment = function(atom, options) {
                 result += 'the variable, ' + name + sub + '. ';
                 break;
             }
+            case 'error': {
+               if (typeof atom.body === 'string') {
+                    const value = PRONUNCIATION[atom.body] ||
+                        PRONUNCIATION[atom.latex.trim()];
+                    let prefix = ', unsupported value: ';
+                    if (value) {
+                        if (value[0]  === '\\') {
+                            prefix = ', invalid command: ';
+                        }
+                        result += prefix + value;
+                    } else {
+                        result += prefix + atom.body;
+                    }
+                } else if (atom.latex && atom.latex.length > 0) {
+                    result += ', invalid command: ';
+                    result += atom.latex;
+                }
+            }
         }
         if (!supsubHandled && atom.superscript) {
 

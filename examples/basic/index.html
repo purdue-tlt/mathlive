@@ -57,7 +57,10 @@
             console.log(mf)
             document.getElementById('output').innerHTML = outputLatex;
         },
-        virtualKeyboards: 'style',
+        onModeChange: (mf, mode) => {
+            console.log('onModeChange', {mf, mode})
+        },
+        //virtualKeyboards: 'style',
         virtualKeyboardMode: 'manual'
     });
 </script>
