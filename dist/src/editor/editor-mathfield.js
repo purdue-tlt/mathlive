@@ -2544,9 +2544,11 @@ MathField.prototype.switchMode_ = function(mode, prefix, suffix) {
         });
     }
     // Notify of mode change
-    if (this.mode !== previousMode && typeof this.config.onModeChange === 'function') {
-        this.config.onModeChange(this, this.mode)
-        this._announce('mode')
+    if (this.mode !== previousMode) {
+        if (typeof this.config.onModeChange === 'function') {
+            this.config.onModeChange(this, this.mode);
+        }
+        this._announce('mode');
     }
     this._requestUpdate();
 }
