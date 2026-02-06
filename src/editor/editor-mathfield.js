@@ -847,11 +847,12 @@ MathField.prototype._onSelectionDidChange = function() {
         const previousMode = this.mode;
         this.mode = this.mathlist.anchorMode() || this.config.defaultMode;
         if (this.mode !== previousMode && typeof this.config.onModeChange === 'function') {
-            this.config.onModeChange(this, this.mode)
+            this.config.onModeChange(this, this.mode);
         }
         if (previousMode === 'command' && this.mode !== 'command') {
             Popover.hidePopover(this);
             this.mathlist.removeCommandString();
+            this._announce('mode');
         }
     }
 
@@ -959,7 +960,13 @@ function speakableText(mathfield, prefix, atoms) {
     let liveText = '';
     // const command = moveAmount > 0 ? "right" : "left";
 
-    if (command === 'plonk') {
+    if (command === 'mode') {
+        if (target.mode === 'command') {
+            liveText = 'Backslash, begin command mode. Type a LaTeX command, then press tab or enter to insert, or escape to cancel.'
+        } else {
+            liveText = 'Cancel command mode.'
+        }
+    } else if (command === 'plonk') {
         // Use this sound to indicate (minor) errors, for
         // example when a command has no effect.
         if (target.plonkSound) {
@@ -983,6 +990,9 @@ function speakableText(mathfield, prefix, atoms) {
     } else if (command === 'replacement') {
         // announce the contents
         liveText = speakableText(target, '', target.mathlist.sibling(0));
+    } else if (command === 'command') {
+         // announce the command
+        liveText = speakableText(target, 'inserted: ', target.mathlist.sibling(0)) + '; End command mode.';
     } else if (command === 'line') {
         // announce the current line -- currently that's everything
         liveText = speakableText(target, '', target.mathlist.root);
@@ -2512,6 +2522,7 @@ MathField.prototype.switchMode_ = function(mode, prefix, suffix) {
     }
     // Remove any error indicator on the current command sequence (if there is one)
     this.mathlist.decorateCommandStringAroundInsertionPoint(false);
+    const previousMode = this.mode
     if (mode === 'command') {
         this.mathlist.removeSuggestion();
         Popover.hidePopover(this);
@@ -2527,14 +2538,17 @@ MathField.prototype.switchMode_ = function(mode, prefix, suffix) {
         this.mode = mode;
     }
     if (suffix) {
-        this.$insert(suffix, {             
+        this.$insert(suffix, {
             format: 'latex', 
             mode: mode
         });
     }
     // Notify of mode change
-    if (typeof this.config.onModeChange === 'function') {
-        this.config.onModeChange(this, this.mode)
+    if (this.mode !== previousMode) {
+        if (typeof this.config.onModeChange === 'function') {
+            this.config.onModeChange(this, this.mode);
+        }
+        this._announce('mode');
     }
     this._requestUpdate();
 }
@@ -2589,7 +2603,7 @@ MathField.prototype.complete_ = function(options) {
             }
         }
         this.undoManager.snapshot(this.config);
-        this._announce('replacement');
+        this._announce('command');
         this.switchMode_('math');
         return true;
     }
